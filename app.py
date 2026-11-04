@@ -5,8 +5,9 @@ import mysql.connector
 # Create the Flask application
 app = Flask(__name__)
 
+
 # Dashboard page
-@app.route('/')
+@app.route("/")
 def dashboard():
     conn = None
     cursor = None
@@ -17,13 +18,21 @@ def dashboard():
 
         # Get the total number of job applications
         cursor = conn.cursor(dictionary=True)
-        cursor.execute(
-            "SELECT COUNT(*) AS total_applications FROM applications"
-        )
+        cursor.execute("SELECT COUNT(*) AS total_applications FROM applications")
         stats = cursor.fetchone()
 
+        # Get the number of applications for each status
+        cursor.execute("""
+            SELECT status, COUNT(*) AS total
+            FROM applications
+            GROUP BY status
+        """)
+        status_counts = {row["status"]: row["total"] for row in cursor.fetchall()}
+
         # Send application statistics data to the dashboard template
-        return render_template('dashboard.html', stats=stats)
+        return render_template(
+            "dashboard.html", stats=stats, status_counts=status_counts
+        )
 
     except mysql.connector.Error:
         # Log database errors and display message
@@ -37,6 +46,7 @@ def dashboard():
         if conn is not None and conn.is_connected():
             conn.close()
 
+
 # Run the application
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
