@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Companies</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Company Name</th>
+            <th>Industry</th>
+            <th>Website</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for company in companies %}
+        <tr>
+            <td>{{ company.company_name }}</td>
+            <td>{{ company.industry or '' }}</td>
+            <td>{{ company.website or '' }}</td>
+            <td>{{ company.city or '' }}</td>
+            <td>{{ company.state or '' }}</td>
+            <td>{{ company.notes or '' }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6">No companies found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

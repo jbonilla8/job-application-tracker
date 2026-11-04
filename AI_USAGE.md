@@ -11,7 +11,8 @@
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
 - Successfully tested the Python-to-MySQL connection.
-- Used AI assistance to create the initial Flask application and HTML templates.
+- Used ChatGPT to create the initial Flask application and HTML templates.
+- Used ChatGPT to help pass data from Flask to HTML templates using Jinja.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.
