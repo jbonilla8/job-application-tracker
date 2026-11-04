@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from database import get_db
 import mysql.connector
 
@@ -48,7 +48,7 @@ def dashboard():
 
 
 # Companies page
-@app.route("/companies")
+@app.route("/companies", methods=["GET", "POST"])
 def companies():
     conn = None
     cursor = None
@@ -57,6 +57,38 @@ def companies():
         # Connect to MySQL database
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
+
+        # Add a new company when the form is submitted
+        if request.method == "POST":
+            company_name = request.form.get("company_name", "").strip()
+
+            # Validate the required company name
+            if not company_name:
+                return "Company name is required.", 400
+
+            # Get company information from the form
+            company_data = (
+                company_name,
+                request.form.get("industry") or None,
+                request.form.get("website") or None,
+                request.form.get("city") or None,
+                request.form.get("state") or None,
+                request.form.get("notes") or None,
+            )
+
+            # Insert the new company into MySQL
+            cursor.execute(
+                """
+                INSERT INTO companies
+                    (company_name, industry, website, city, state, notes)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """,
+                company_data,
+            )
+            conn.commit()
+
+            # Return to the Companies page
+            return redirect(url_for("companies"))
 
         # Retrieve all company information in alphabetical order
         cursor.execute("""
@@ -71,8 +103,8 @@ def companies():
 
     except mysql.connector.Error:
         # Log database errors and display message
-        app.logger.exception("Error loading companies")
-        return "Unable to load companies.", 503
+        app.logger.exception("Error loading or saving companies")
+        return "Unable to load or save companies.", 503
 
     finally:
         # Close the database connection

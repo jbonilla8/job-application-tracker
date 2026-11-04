@@ -33,4 +33,44 @@
     </tbody>
 </table>
 
+
+<h3>Add Company</h3>
+
+<form method="POST" action="{{ url_for('companies') }}">
+
+    <p>
+        <label for="company_name">Company Name:</label>
+        <input type="text" id="company_name" name="company_name" required>
+    </p>
+
+    <p>
+        <label for="industry">Industry:</label>
+        <input type="text" id="industry" name="industry">
+    </p>
+
+    <p>
+        <label for="website">Website:</label>
+        <input type="url" id="website" name="website">
+    </p>
+
+    <p>
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city">
+    </p>
+
+    <p>
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state">
+    </p>
+
+    <p>
+        <label for="notes">Notes:</label>
+        <textarea id="notes" name="notes"></textarea>
+    </p>
+
+    <button type="submit">Add Company</button>
+
+</form>
+
+
 {% endblock %}
