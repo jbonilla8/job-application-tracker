@@ -13,6 +13,7 @@
             <th>City</th>
             <th>State</th>
             <th>Notes</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -24,53 +25,134 @@
             <td>{{ company.city or '' }}</td>
             <td>{{ company.state or '' }}</td>
             <td>{{ company.notes or '' }}</td>
+            <td>
+                <a href="{{ url_for('companies', edit=company.company_id) }}">Edit</a>
+            </td>
         </tr>
         {% else %}
         <tr>
-            <td colspan="6">No companies found.</td>
+            <td colspan="7">No companies found.</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
+{% if edit_company %}
 
-<h3>Add Company</h3>
+<h3>Edit Company</h3>
 
-<form method="POST" action="{{ url_for('companies') }}">
-
+<form id="edit-company-form" method="POST" action="{{ url_for('companies') }}">
+    <!-- Identify the selected company and form action -->
+    <input type="hidden" name="form_action" value="edit">
+    <input type="hidden" name="company_id" value="{{ edit_company.company_id }}">
     <p>
-        <label for="company_name">Company Name:</label>
-        <input type="text" id="company_name" name="company_name" required>
+        <label for="edit_company_name">Company Name:</label>
+        <input type="text" id="edit_company_name" name="company_name" value="{{ edit_company.company_name }}" required>
     </p>
 
     <p>
-        <label for="industry">Industry:</label>
-        <input type="text" id="industry" name="industry">
+        <label for="edit_industry">Industry:</label>
+        <input type="text" id="edit_industry" name="industry" value="{{ edit_company.industry or '' }}">
     </p>
 
     <p>
-        <label for="website">Website:</label>
-        <input type="url" id="website" name="website">
+        <label for="edit_website">Website:</label>
+        <input type="text" id="edit_website" name="website" value="{{ edit_company.website or '' }}">
     </p>
 
     <p>
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city">
+        <label for="edit_city">City:</label>
+        <input type="text" id="edit_city" name="city" value="{{ edit_company.city or '' }}">
     </p>
 
     <p>
-        <label for="state">State:</label>
-        <input type="text" id="state" name="state">
+        <label for="edit_state">State:</label>
+        <input type="text" id="edit_state" name="state" value="{{ edit_company.state or '' }}">
     </p>
 
     <p>
-        <label for="notes">Notes:</label>
-        <textarea id="notes" name="notes"></textarea>
+        <label for="edit_notes">Notes:</label>
+        <textarea id="edit_notes" name="notes">{{ edit_company.notes or '' }}</textarea>
     </p>
 
-    <button type="submit">Add Company</button>
-
+    <button type="submit" id="save-changes-button" disabled>Save Changes</button>
+    <a href="{{ url_for('companies') }}">Cancel</a>
 </form>
 
+{% endif %}
+
+{% if not edit_company %}
+
+<button type="button" onclick="document.getElementById('add-company-form').hidden = false">
+    Add Company
+</button>
+
+<div id="add-company-form" hidden>
+
+    <h3>Add Company</h3>
+
+    <form method="POST" action="{{ url_for('companies') }}">
+
+        <p>
+            <label for="company_name">Company Name:</label>
+            <input type="text" id="company_name" name="company_name" required>
+        </p>
+
+        <p>
+            <label for="industry">Industry:</label>
+            <input type="text" id="industry" name="industry">
+        </p>
+
+        <p>
+            <label for="website">Website:</label>
+            <input type="url" id="website" name="website">
+        </p>
+
+        <p>
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city">
+        </p>
+
+        <p>
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state">
+        </p>
+
+        <p>
+            <label for="notes">Notes:</label>
+            <textarea id="notes" name="notes"></textarea>
+        </p>
+
+        <button type="submit">Add Company</button>
+        <a href="{{ url_for('companies') }}">Cancel</a>
+    </form>
+</div>
+{% endif %}
+
+{% if edit_company %}
+<script>
+    // Return to the Companies page only when the browser is refreshed
+    const navigation = performance.getEntriesByType("navigation")[0];
+
+    if (navigation && navigation.type === "reload") {
+        window.location.replace("{{ url_for('companies') }}");
+    }
+
+    // Get the Edit Company form and Save Changes button
+    const editForm = document.getElementById("edit-company-form");
+    const saveButton = document.getElementById("save-changes-button");
+
+    // Store the original values of all editable fields
+    const fields = Array.from(editForm.querySelectorAll('input:not([type="hidden"]), textarea'));
+    const originalValues = fields.map(field => field.value);
+
+    // Enable Save Changes only when a field has been modified
+    editForm.addEventListener("input", () => {
+        saveButton.disabled = !fields.some(
+            (field, index) => field.value !== originalValues[index]
+        );
+    });
+</script>
+{% endif %}
 
 {% endblock %}

@@ -58,6 +58,45 @@ def companies():
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
 
+        # Update an existing company when the edit form is submitted
+        if request.method == "POST" and request.form.get("form_action") == "edit":
+            company_id = request.form.get("company_id", type=int)
+            company_name = request.form.get("company_name", "").strip()
+
+            # Validate the company ID and required name
+            if company_id is None or not company_name:
+                return "Valid company ID and name are required.", 400
+
+            # Get updated company information from the form
+            company_data = (
+                company_name,
+                request.form.get("industry") or None,
+                request.form.get("website") or None,
+                request.form.get("city") or None,
+                request.form.get("state") or None,
+                request.form.get("notes") or None,
+                company_id,
+            )
+
+            # Update the selected company in MySQL
+            cursor.execute(
+                """
+                UPDATE companies
+                SET company_name = %s,
+                    industry = %s,
+                    website = %s,
+                    city = %s,
+                    state = %s,
+                    notes = %s
+                WHERE company_id = %s
+                """,
+                company_data,
+            )
+            conn.commit()
+
+            # Return to the Companies page
+            return redirect(url_for("companies"))
+
         # Add a new company when the form is submitted
         if request.method == "POST":
             company_name = request.form.get("company_name", "").strip()
@@ -98,8 +137,23 @@ def companies():
         """)
         company_list = cursor.fetchall()
 
+        # Retrieve the company selected for editing by id
+        edit_company = None
+        company_id = request.args.get("edit", type=int)
+
+        if company_id is not None:
+            cursor.execute(
+                "SELECT * FROM companies WHERE company_id = %s",
+                (company_id,),
+            )
+            edit_company = cursor.fetchone()
+
         # Send company data to the HTML template
-        return render_template("companies.html", companies=company_list)
+        return render_template(
+            "companies.html",
+            companies=company_list,
+            edit_company=edit_company,
+        )
 
     except mysql.connector.Error:
         # Log database errors and display message
