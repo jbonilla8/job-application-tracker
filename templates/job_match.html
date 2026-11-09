@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Job Match</h2>
+
+<p>Enter your skills to find matching jobs.</p>
+
+<form method="GET" action="{{ url_for('job_match') }}">
+    <p>
+        <label for="skills">Your Skills:</label>
+        <input type="text" id="skills" name="skills" placeholder="Python, SQL, Flask" required>
+    </p>
+
+    <button type="submit">Find Matching Jobs</button>
+</form>
+
+{% if skills %}
+
+<h3>Matching Jobs</h3>
+
+<p>Entered skills: {{ skills }}</p>
+
+{% if jobs %}
+
+<ol>
+    {% for job in jobs %}
+    <li>
+        <strong>{{ job.job_title }}</strong>
+        at {{ job.company_name }}
+        — {{ job.match_percentage }}%
+        ({{ job.matched_count }}/{{ job.total_required }} skills)
+
+        <p>
+            Missing:
+            {% if job.missing_skills %}
+            {{ job.missing_skills | join(', ') }}
+            {% else %}
+            None
+            {% endif %}
+        </p>
+    </li>
+    {% endfor %}
+</ol>
+
+{% else %}
+
+<p>No matching jobs found.</p>
+
+{% endif %}
+
+{% endif %}
+
+{% endblock %}

@@ -759,6 +759,104 @@ def contacts():
             conn.close()
 
 
+# Job Match page
+@app.route("/job-match")
+def job_match():
+    skills = request.args.get("skills", "").strip()
+    job_list = []
+    conn = None
+    cursor = None
+
+    try:
+        # Retrieve job requirements when the user enters skills
+        if skills:
+            conn = get_db()
+            cursor = conn.cursor(dictionary=True)
+
+            cursor.execute("""
+                SELECT
+                    jobs.job_id,
+                    jobs.job_title,
+                    jobs.requirements,
+                    companies.company_name
+                FROM jobs
+                JOIN companies
+                    ON jobs.company_id = companies.company_id
+                ORDER BY companies.company_name, jobs.job_title
+            """)
+
+            job_list = cursor.fetchall()
+
+            # Convert the user's comma-separated skills into a set
+            user_skills = {
+                skill.strip().lower() for skill in skills.split(",") if skill.strip()
+            }
+
+            # Calculate the match percentage for each job
+            for job in job_list:
+                # Convert JSON requirements into a Python list
+                requirements = job["requirements"]
+
+                if isinstance(requirements, str):
+                    requirements = json.loads(requirements)
+
+                # Handle jobs without a usable list of skills
+                if not isinstance(requirements, list) or not requirements:
+                    job["match_percentage"] = 0
+                    continue
+
+                # Normalize required skills for comparison
+                required_skills = {
+                    skill.strip().lower()
+                    for skill in requirements
+                    if isinstance(skill, str) and skill.strip()
+                }
+
+                # Calculate the percentage of required skills matched
+                if required_skills:
+                    matching_skills = user_skills.intersection(required_skills)
+
+                    # Count matched and required skills
+                    job["matched_count"] = len(matching_skills)
+                    job["total_required"] = len(required_skills)
+
+                    # Identify the skills the user is missing
+                    job["missing_skills"] = [
+                        skill
+                        for skill in requirements
+                        if isinstance(skill, str)
+                        and skill.strip()
+                        and skill.strip().lower() not in user_skills
+                    ]
+
+                    # Calculate the match percentage as a whole number
+                    job["match_percentage"] = round(
+                        len(matching_skills) / len(required_skills) * 100
+                    )
+                else:
+                    job["match_percentage"] = 0
+
+            # Show only jobs with at least one matching skill
+            job_list = [job for job in job_list if job["match_percentage"] > 0]
+
+            # Rank jobs from highest to lowest match percentage
+            job_list.sort(key=lambda job: job["match_percentage"], reverse=True)
+
+        # Send the entered skills and job data to the template
+        return render_template("job_match.html", skills=skills, jobs=job_list)
+
+    except mysql.connector.Error:
+        app.logger.exception("Error loading job requirements")
+        return "Unable to load job requirements.", 503
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+
+        if conn is not None and conn.is_connected():
+            conn.close()
+
+
 # Run the application
 if __name__ == "__main__":
     app.run(debug=True)

@@ -13,6 +13,7 @@
 7. "How to delete records in Flask with confirmation and foreign key protection"
 8. "How to validate JSON input in Flask before saving it to MySQL"
 9. "How to make delete confirmation popups show which record will be deleted without displaying the localhost browser heading"
+10. "How to make a job matching feature that compares my skills to job requirements, ranks the jobs by match percentage, and shows which skills I'm missing"
 
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
@@ -24,6 +25,7 @@
 - Used ChatGPT to help implement company deletion with a confirmation dialog and handle foreign key errors in Flask.
 - Used ChatGPT to help validate JSON requirements before saving job records to MySQL.
 - Used ChatGPT to help implement custom HTML and JavaScript delete confirmation dialogs for all four tables.
+- Used ChatGPT to help build the Job Match algorithm to calculate match percentages and identify matching and missing skills.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.
@@ -39,6 +41,8 @@
 - Shortened the Jobs table headers to make them more concise and easier to read.
 - Chose to improve the Delete confirmation dialogs so they identify the specific record being deleted instead of showing a generic message.
 - Replaced the default browser confirmation popups with custom dialogs for a more consistent interface.
+- Changed the Job Match results from a table to a numbered list showing match percentages, skill counts, and missing skills to better match the project specification example.
+- Chose to display only jobs with matching skills instead of including 0% matches or jobs without specified requirements.
 
 ## Lessons Learned
 - Using a `.env` file keeps database credentials separate from the code and `.gitignore` prevents the file from being tracked by Git.
