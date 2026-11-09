@@ -608,6 +608,49 @@ def contacts():
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
 
+        # Update an existing contact when the edit form is submitted
+        if request.method == "POST" and request.form.get("form_action") == "edit":
+            contact_id = request.form.get("contact_id", type=int)
+            company_id = request.form.get("company_id", type=int)
+            contact_name = request.form.get("contact_name", "").strip()
+
+            # Validate required fields
+            if contact_id is None or company_id is None or not contact_name:
+                return "Contact ID, company, and name are required.", 400
+
+            # Get updated contact information
+            contact_data = (
+                company_id,
+                contact_name,
+                request.form.get("title", "").strip() or None,
+                request.form.get("email", "").strip() or None,
+                request.form.get("phone", "").strip() or None,
+                request.form.get("linkedin_url", "").strip() or None,
+                request.form.get("notes", "").strip() or None,
+                contact_id,
+            )
+
+            # Update the selected contact in MySQL
+            cursor.execute(
+                """
+                UPDATE contacts
+                SET company_id = %s,
+                    contact_name = %s,
+                    title = %s,
+                    email = %s,
+                    phone = %s,
+                    linkedin_url = %s,
+                    notes = %s
+                WHERE contact_id = %s
+            """,
+                contact_data,
+            )
+
+            conn.commit()
+
+            # Return to the Contacts page
+            return redirect(url_for("contacts"))
+
         # Add a new contact when the form is submitted
         if request.method == "POST":
             company_id = request.form.get("company_id", type=int)
@@ -667,9 +710,23 @@ def contacts():
 
         company_list = cursor.fetchall()
 
-        # Send contact records and company options to the HTML template
+        # Retrieve the contact selected for editing
+        edit_contact = None
+        contact_id = request.args.get("edit", type=int)
+
+        if contact_id is not None:
+            cursor.execute(
+                "SELECT * FROM contacts WHERE contact_id = %s",
+                (contact_id,),
+            )
+            edit_contact = cursor.fetchone()
+
+        # Send contacts, company options, and selected contact to HTML
         return render_template(
-            "contacts.html", contacts=contact_list, companies=company_list
+            "contacts.html",
+            contacts=contact_list,
+            companies=company_list,
+            edit_contact=edit_contact,
         )
 
     except mysql.connector.Error:

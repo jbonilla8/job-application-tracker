@@ -14,6 +14,7 @@
             <th>Phone</th>
             <th>LinkedIn URL</th>
             <th>Notes</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -26,25 +27,87 @@
             <td>{{ contact.phone or '' }}</td>
             <td>{{ contact.linkedin_url or '' }}</td>
             <td>{{ contact.notes or '' }}</td>
+            <td>
+                <a href="{{ url_for('contacts', edit=contact.contact_id) }}">Edit</a>
+            </td>
         </tr>
         {% else %}
         <tr>
-            <td colspan="7">No contacts found.</td>
+            <td colspan="8">No contacts found.</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
+
+{% if edit_contact %}
+
+<h3>Edit Contact</h3>
+
+<form id="edit-contact-form" method="POST" action="{{ url_for('contacts') }}">
+
+    <!-- Identify the contact being edited -->
+    <input type="hidden" name="form_action" value="edit">
+    <input type="hidden" name="contact_id" value="{{ edit_contact.contact_id }}">
+
+    <p>
+        <label for="edit_company_id">Company:</label>
+        <select id="edit_company_id" name="company_id" required>
+            {% for company in companies %}
+            <option value="{{ company.company_id }}" {% if company.company_id==edit_contact.company_id %}selected{%
+                endif %}>
+                {{ company.company_name }}
+            </option>
+            {% endfor %}
+        </select>
+    </p>
+
+    <p>
+        <label for="edit_contact_name">Name:</label>
+        <input type="text" id="edit_contact_name" name="contact_name" value="{{ edit_contact.contact_name }}" required>
+    </p>
+
+    <p>
+        <label for="edit_title">Title:</label>
+        <input type="text" id="edit_title" name="title" value="{{ edit_contact.title or '' }}">
+    </p>
+
+    <p>
+        <label for="edit_email">Email:</label>
+        <input type="email" id="edit_email" name="email" value="{{ edit_contact.email or '' }}">
+    </p>
+
+    <p>
+        <label for="edit_phone">Phone:</label>
+        <input type="tel" id="edit_phone" name="phone" value="{{ edit_contact.phone or '' }}">
+    </p>
+
+    <p>
+        <label for="edit_linkedin_url">LinkedIn URL:</label>
+        <input type="url" id="edit_linkedin_url" name="linkedin_url" value="{{ edit_contact.linkedin_url or '' }}">
+    </p>
+
+    <p>
+        <label for="edit_notes">Notes:</label>
+        <textarea id="edit_notes" name="notes">{{ edit_contact.notes or '' }}</textarea>
+    </p>
+
+    <button type="submit" id="save-changes-button" disabled>Save Changes</button>
+    <a href="{{ url_for('contacts') }}">Cancel</a>
+
+</form>
+
+{% endif %}
+
+{% if not edit_contact %}
 <button type="button" onclick="document.getElementById('add-contact-form').hidden = false">
     Add Contact
 </button>
 
 <div id="add-contact-form" hidden>
-
     <h3>Add Contact</h3>
 
     <form method="POST" action="{{ url_for('contacts') }}">
-
         <p>
             <label for="company_id">Company:</label>
             <select id="company_id" name="company_id" required>
@@ -89,9 +152,46 @@
 
         <button type="submit">Add Contact</button>
         <a href="{{ url_for('contacts') }}">Cancel</a>
-
     </form>
-
 </div>
+{% endif %}
+
+{% if edit_contact %}
+<script>
+    // Return to the Contacts page when the browser is refreshed
+    const navigation = performance.getEntriesByType("navigation")[0];
+
+    if (navigation && navigation.type === "reload") {
+        window.location.replace("{{ url_for('contacts') }}");
+    }
+
+    // Get the Edit Contact form and Save Changes button
+    const editForm = document.getElementById("edit-contact-form");
+    const saveButton = document.getElementById("save-changes-button");
+
+    // Store the original values of all editable fields
+    const fields = Array.from(
+        editForm.querySelectorAll('input:not([type="hidden"]), select, textarea')
+    );
+
+    const originalValues = fields.map(field =>
+        field.type === "checkbox" ? field.checked : field.value
+    );
+
+    // Enable Save Changes only when a field has changed
+    function checkForChanges() {
+        saveButton.disabled = !fields.some((field, index) => {
+            const currentValue = field.type === "checkbox"
+                ? field.checked
+                : field.value;
+
+            return currentValue !== originalValues[index];
+        });
+    }
+
+    editForm.addEventListener("input", checkForChanges);
+    editForm.addEventListener("change", checkForChanges);
+</script>
+{% endif %}
 
 {% endblock %}
