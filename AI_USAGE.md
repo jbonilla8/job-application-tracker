@@ -8,7 +8,7 @@
 2. "How to create reusable base HTML template in Flask"
 3. "How to retrieve data from MySQL and display it in a Flask HTML template"
 4. "How to handle POST requests in Flask and save form data to MySQL"
-5. "How to update existing company records using Flask and MySQL"
+5. "How to update existing records using Flask and MySQL"
 6. "How to enable the Save Changes button only when form data changes"
 7. "How to delete records in Flask with confirmation and foreign key protection"
 

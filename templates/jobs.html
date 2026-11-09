@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Jobs</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Company</th>
+            <th>Job Title</th>
+            <th>Job Type</th>
+            <th>Minimum Salary</th>
+            <th>Maximum Salary</th>
+            <th>Job URL</th>
+            <th>Date Posted</th>
+            <th>Requirements</th>
+            <th>Description</th>
+            <th>Active</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ job.company_name }}</td>
+            <td>{{ job.job_title }}</td>
+            <td>{{ job.job_type or '' }}</td>
+            <td>{{ job.salary_min if job.salary_min is not none else '' }}</td>
+            <td>{{ job.salary_max if job.salary_max is not none else '' }}</td>
+            <td>{{ job.job_url or '' }}</td>
+            <td>{{ job.date_posted or '' }}</td>
+            <td>{{ job.requirements or '' }}</td>
+            <td>{{ job.job_description or '' }}</td>
+            <td>{{ 'Yes' if job.is_active else 'No' }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="10">No jobs found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -191,6 +191,42 @@ def companies():
             conn.close()
 
 
+# Jobs page
+@app.route("/jobs")
+def jobs():
+    conn = None
+    cursor = None
+
+    try:
+        # Connect to MySQL database
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+
+        # Retrieve jobs with their company names
+        cursor.execute("""
+            SELECT jobs.*, companies.company_name
+            FROM jobs
+            JOIN companies ON jobs.company_id = companies.company_id
+            ORDER BY companies.company_name, jobs.job_title
+        """)
+        job_list = cursor.fetchall()
+
+        # Send job data to the HTML template
+        return render_template("jobs.html", jobs=job_list)
+
+    except mysql.connector.Error:
+        # Log database errors and display message
+        app.logger.exception("Error loading jobs")
+        return "Unable to load jobs.", 503
+
+    finally:
+        # Close the database connection
+        if cursor is not None:
+            cursor.close()
+        if conn is not None and conn.is_connected():
+            conn.close()
+
+
 # Run the application
 if __name__ == "__main__":
     app.run(debug=True)
