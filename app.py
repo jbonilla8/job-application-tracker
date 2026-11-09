@@ -410,6 +410,24 @@ def applications():
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
 
+        # Delete an existing application when confirmed
+        if request.method == "POST" and request.form.get("form_action") == "delete":
+            application_id = request.form.get("application_id", type=int)
+
+            # Validate the application ID
+            if application_id is None:
+                return "A valid application ID is required.", 400
+
+            # Delete the selected application from MySQL
+            cursor.execute(
+                "DELETE FROM applications WHERE application_id = %s",
+                (application_id,),
+            )
+            conn.commit()
+
+            # Return to the Applications page
+            return redirect(url_for("applications"))
+
         # Update an existing application when the edit form is submitted
         if request.method == "POST" and request.form.get("form_action") == "edit":
             application_id = request.form.get("application_id", type=int)

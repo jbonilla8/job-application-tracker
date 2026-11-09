@@ -29,6 +29,17 @@
             <td>{{ application.interview_data or '' }}</td>
             <td>
                 <a href="{{ url_for('applications', edit=application.application_id) }}">Edit</a>
+
+                <!-- Confirm before deleting an application -->
+                <form method="POST" action="{{ url_for('applications') }}"
+                    onsubmit="return confirm('Are you sure you want to delete this application?');"
+                    style="display: inline;">
+
+                    <input type="hidden" name="form_action" value="delete">
+                    <input type="hidden" name="application_id" value="{{ application.application_id }}">
+
+                    <button type="submit">Delete</button>
+                </form>
             </td>
         </tr>
         {% else %}
