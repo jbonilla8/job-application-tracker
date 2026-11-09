@@ -32,8 +32,8 @@
 
                 <!-- Confirm before deleting an application -->
                 <form method="POST" action="{{ url_for('applications') }}"
-                    onsubmit="return confirm('Are you sure you want to delete this application?');"
-                    style="display: inline;">
+                    onsubmit="return openDeleteApplicationDialog(this);" data-title="{{ application.job_title }}"
+                    data-company="{{ application.company_name }}" style="display: inline;">
 
                     <input type="hidden" name="form_action" value="delete">
                     <input type="hidden" name="application_id" value="{{ application.application_id }}">
@@ -49,6 +49,21 @@
         {% endfor %}
     </tbody>
 </table>
+
+<!-- Custom confirmation dialog for deleting an application -->
+<dialog id="delete-application-dialog">
+    <h3>Delete Application</h3>
+
+    <p>
+        Are you sure you want to delete the application for
+        <strong id="application-to-delete"></strong>?
+    </p>
+
+    <form method="dialog">
+        <button type="submit" value="cancel">Cancel</button>
+        <button type="submit" value="delete">Delete</button>
+    </form>
+</dialog>
 
 {% if edit_application %}
 
@@ -215,5 +230,33 @@
     editForm.addEventListener("change", checkForChanges);
 </script>
 {% endif %}
+
+<script>
+    // Store the application form until deletion is confirmed
+    const deleteApplicationDialog = document.getElementById("delete-application-dialog");
+    let applicationFormToDelete = null;
+
+    // Open the custom confirmation dialog
+    function openDeleteApplicationDialog(form) {
+        applicationFormToDelete = form;
+
+        document.getElementById("application-to-delete").textContent =
+            form.dataset.title + " at " + form.dataset.company;
+
+        deleteApplicationDialog.returnValue = "";
+        deleteApplicationDialog.showModal();
+
+        return false;
+    }
+
+    // Submit the original Delete form only when confirmed
+    deleteApplicationDialog.addEventListener("close", function () {
+        if (this.returnValue === "delete" && applicationFormToDelete) {
+            applicationFormToDelete.submit();
+        }
+
+        applicationFormToDelete = null;
+    });
+</script>
 
 {% endblock %}

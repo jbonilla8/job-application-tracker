@@ -37,8 +37,8 @@
                 <a href="{{ url_for('jobs', edit=job.job_id) }}">Edit</a>
 
                 <!-- Confirm before deleting a job -->
-                <form method="POST" action="{{ url_for('jobs') }}"
-                    onsubmit="return confirm('Are you sure you want to delete this job?');" style="display: inline;">
+                <form method="POST" action="{{ url_for('jobs') }}" onsubmit="return openDeleteJobDialog(this);"
+                    data-title="{{ job.job_title }}" data-company="{{ job.company_name }}" style="display: inline;">
 
                     <input type="hidden" name="form_action" value="delete">
                     <input type="hidden" name="job_id" value="{{ job.job_id }}">
@@ -46,7 +46,6 @@
                     <button type="submit">Delete</button>
                 </form>
             </td>
-
         </tr>
         {% else %}
         <tr>
@@ -55,6 +54,21 @@
         {% endfor %}
     </tbody>
 </table>
+
+<!-- Custom confirmation dialog for deleting a job -->
+<dialog id="delete-job-dialog">
+    <h3>Delete Job</h3>
+
+    <p>
+        Are you sure you want to delete
+        <strong id="job-to-delete"></strong>?
+    </p>
+
+    <form method="dialog">
+        <button type="submit" value="cancel">Cancel</button>
+        <button type="submit" value="delete">Delete</button>
+    </form>
+</dialog>
 
 {% if edit_job %}
 
@@ -256,5 +270,34 @@
     editForm.addEventListener("change", checkForChanges);
 </script>
 {% endif %}
+
+
+<script>
+    // Store the job form until the user confirms deletion
+    const deleteJobDialog = document.getElementById("delete-job-dialog");
+    let jobFormToDelete = null;
+
+    // Open the custom confirmation dialog
+    function openDeleteJobDialog(form) {
+        jobFormToDelete = form;
+
+        document.getElementById("job-to-delete").textContent =
+            form.dataset.title + " at " + form.dataset.company;
+
+        deleteJobDialog.returnValue = "";
+        deleteJobDialog.showModal();
+
+        return false;
+    }
+
+    // Submit the original Delete form only when confirmed
+    deleteJobDialog.addEventListener("close", function () {
+        if (this.returnValue === "delete" && jobFormToDelete) {
+            jobFormToDelete.submit();
+        }
+
+        jobFormToDelete = null;
+    });
+</script>
 
 {% endblock %}

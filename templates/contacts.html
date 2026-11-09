@@ -31,8 +31,8 @@
                 <a href="{{ url_for('contacts', edit=contact.contact_id) }}">Edit</a>
 
                 <!-- Confirm before deleting a contact -->
-                <form method="POST" action="{{ url_for('contacts') }}"
-                    onsubmit="return confirm('Are you sure you want to delete this contact?');"
+                <form method="POST" action="{{ url_for('contacts') }}" onsubmit="return openDeleteContactDialog(this);"
+                    data-name="{{ contact.contact_name }}" data-company="{{ contact.company_name }}"
                     style="display: inline;">
 
                     <input type="hidden" name="form_action" value="delete">
@@ -49,6 +49,21 @@
         {% endfor %}
     </tbody>
 </table>
+
+<!-- Custom confirmation dialog for deleting a contact -->
+<dialog id="delete-contact-dialog">
+    <h3>Delete Contact</h3>
+
+    <p>
+        Are you sure you want to delete
+        <strong id="contact-to-delete"></strong>?
+    </p>
+
+    <form method="dialog">
+        <button type="submit" value="cancel">Cancel</button>
+        <button type="submit" value="delete">Delete</button>
+    </form>
+</dialog>
 
 
 {% if edit_contact %}
@@ -204,5 +219,33 @@
     editForm.addEventListener("change", checkForChanges);
 </script>
 {% endif %}
+
+<script>
+    // Store the contact form until deletion is confirmed
+    const deleteContactDialog = document.getElementById("delete-contact-dialog");
+    let contactFormToDelete = null;
+
+    // Open the custom confirmation dialog
+    function openDeleteContactDialog(form) {
+        contactFormToDelete = form;
+
+        document.getElementById("contact-to-delete").textContent =
+            form.dataset.name + " at " + form.dataset.company;
+
+        deleteContactDialog.returnValue = "";
+        deleteContactDialog.showModal();
+
+        return false;
+    }
+
+    // Submit the original Delete form only when confirmed
+    deleteContactDialog.addEventListener("close", function () {
+        if (this.returnValue === "delete" && contactFormToDelete) {
+            contactFormToDelete.submit();
+        }
+
+        contactFormToDelete = null;
+    });
+</script>
 
 {% endblock %}

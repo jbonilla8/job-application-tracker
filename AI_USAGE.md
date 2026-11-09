@@ -12,6 +12,7 @@
 6. "How to enable the Save Changes button only when form data changes"
 7. "How to delete records in Flask with confirmation and foreign key protection"
 8. "How to validate JSON input in Flask before saving it to MySQL"
+9. "How to make delete confirmation popups show which record will be deleted without displaying the localhost browser heading"
 
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
@@ -22,6 +23,7 @@
 - Used ChatGPT to help implement editing company records and detect changes in form fields.
 - Used ChatGPT to help implement company deletion with a confirmation dialog and handle foreign key errors in Flask.
 - Used ChatGPT to help validate JSON requirements before saving job records to MySQL.
+- Used ChatGPT to help implement custom HTML and JavaScript delete confirmation dialogs for all four tables.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.
@@ -35,6 +37,8 @@
 - Kept the company ID in the URL while editing, but cleared it when the page is refreshed.
 - Kept the Save Changes button disabled until the Edit Company form data was actually changed.
 - Shortened the Jobs table headers to make them more concise and easier to read.
+- Chose to improve the Delete confirmation dialogs so they identify the specific record being deleted instead of showing a generic message.
+- Replaced the default browser confirmation popups with custom dialogs for a more consistent interface.
 
 ## Lessons Learned
 - Using a `.env` file keeps database credentials separate from the code and `.gitignore` prevents the file from being tracked by Git.

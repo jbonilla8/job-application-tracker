@@ -29,8 +29,8 @@
                 <a href="{{ url_for('companies', edit=company.company_id) }}">Edit</a>
 
                 <!-- Confirm before deleting a company -->
-                <form method="POST" action="{{ url_for('companies') }}"
-                    onsubmit="return confirm('Are you sure you want to delete this company?');">
+                <form method="POST" action="{{ url_for('companies') }}" onsubmit="return openDeleteCompanyDialog(this);"
+                    data-name="{{ company.company_name }}">
 
                     <input type="hidden" name="form_action" value="delete">
                     <input type="hidden" name="company_id" value="{{ company.company_id }}">
@@ -46,6 +46,22 @@
         {% endfor %}
     </tbody>
 </table>
+
+<!-- Custom confirmation dialog for deleting a company -->
+<dialog id="delete-company-dialog">
+    <h3>Delete Company</h3>
+
+    <p>
+        Are you sure you want to delete
+        <strong id="company-to-delete"></strong>?
+    </p>
+
+    <form method="dialog">
+        <button type="submit" value="cancel">Cancel</button>
+        <button type="submit" value="delete">Delete</button>
+    </form>
+</dialog>
+
 
 {% if edit_company %}
 
@@ -162,7 +178,36 @@
             (field, index) => field.value !== originalValues[index]
         );
     });
+
 </script>
 {% endif %}
+
+<script>
+    // Store the company form until the user confirms deletion
+    const deleteCompanyDialog = document.getElementById("delete-company-dialog");
+    let companyFormToDelete = null;
+
+    // Open the custom confirmation dialog
+    function openDeleteCompanyDialog(form) {
+        companyFormToDelete = form;
+
+        document.getElementById("company-to-delete").textContent =
+            form.dataset.name;
+
+        deleteCompanyDialog.returnValue = "";
+        deleteCompanyDialog.showModal();
+
+        return false;
+    }
+
+    // Submit the original Delete form only when confirmed
+    deleteCompanyDialog.addEventListener("close", function () {
+        if (this.returnValue === "delete" && companyFormToDelete) {
+            companyFormToDelete.submit();
+        }
+
+        companyFormToDelete = null;
+    });
+</script>
 
 {% endblock %}
