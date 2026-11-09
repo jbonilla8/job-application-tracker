@@ -203,6 +203,36 @@ def jobs():
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
 
+        # Delete an existing job when confirmed
+        if request.method == "POST" and request.form.get("form_action") == "delete":
+            job_id = request.form.get("job_id", type=int)
+
+            # Validate the job ID
+            if job_id is None:
+                return "A valid job ID is required.", 400
+
+            try:
+                cursor.execute(
+                    "DELETE FROM jobs WHERE job_id = %s",
+                    (job_id,),
+                )
+                conn.commit()
+
+            except mysql.connector.IntegrityError as error:
+                conn.rollback()
+
+                # Prevent deletion when applications reference this job
+                if error.errno == 1451:
+                    return (
+                        "Cannot delete this job because it has associated applications.",
+                        409,
+                    )
+
+                raise
+
+            # Return to the Jobs page after deletion
+            return redirect(url_for("jobs"))
+
         # Update an existing job when the edit form is submitted
         if request.method == "POST" and request.form.get("form_action") == "edit":
             job_id = request.form.get("job_id", type=int)
