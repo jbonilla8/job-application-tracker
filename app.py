@@ -203,6 +203,68 @@ def jobs():
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
 
+        # Update an existing job when the edit form is submitted
+        if request.method == "POST" and request.form.get("form_action") == "edit":
+            job_id = request.form.get("job_id", type=int)
+            company_id = request.form.get("company_id", type=int)
+            job_title = request.form.get("job_title", "").strip()
+
+            # Validate the required fields
+            if job_id is None or company_id is None or not job_title:
+                return "Valid job ID, company, and title are required.", 400
+
+            # Validate the JSON requirements
+            requirements = request.form.get("requirements", "").strip() or None
+
+            if requirements:
+                try:
+                    skills = json.loads(requirements)
+                except json.JSONDecodeError:
+                    return "Requirements must contain valid JSON.", 400
+
+                if not isinstance(skills, list) or not all(
+                    isinstance(skill, str) for skill in skills
+                ):
+                    return "Requirements must be a JSON list of skills.", 400
+
+            # Get updated job information from the form
+            job_data = (
+                company_id,
+                job_title,
+                request.form.get("job_type") or None,
+                request.form.get("salary_min", type=int),
+                request.form.get("salary_max", type=int),
+                request.form.get("job_url") or None,
+                request.form.get("date_posted") or None,
+                requirements,
+                request.form.get("job_description") or None,
+                1 if request.form.get("is_active") == "on" else 0,
+                job_id,
+            )
+
+            # Update the selected job in MySQL
+            cursor.execute(
+                """
+                UPDATE jobs
+                SET company_id = %s,
+                    job_title = %s,
+                    job_type = %s,
+                    salary_min = %s,
+                    salary_max = %s,
+                    job_url = %s,
+                    date_posted = %s,
+                    requirements = %s,
+                    job_description = %s,
+                    is_active = %s
+                WHERE job_id = %s
+                """,
+                job_data,
+            )
+            conn.commit()
+
+            # Return to the Jobs page
+            return redirect(url_for("jobs"))
+
         # Add a new job when the form is submitted
         if request.method == "POST":
             company_id = request.form.get("company_id", type=int)
@@ -272,13 +334,26 @@ def jobs():
             FROM companies
             ORDER BY company_name
         """)
+
         company_list = cursor.fetchall()
+
+        # Retrieve the job selected for editing by ID
+        edit_job = None
+        job_id = request.args.get("edit", type=int)
+
+        if job_id is not None:
+            cursor.execute(
+                "SELECT * FROM jobs WHERE job_id = %s",
+                (job_id,),
+            )
+            edit_job = cursor.fetchone()
 
         # Send job and company data to the HTML template
         return render_template(
             "jobs.html",
             jobs=job_list,
             companies=company_list,
+            edit_job=edit_job,
         )
 
     except mysql.connector.Error:
