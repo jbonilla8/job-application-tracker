@@ -597,6 +597,45 @@ def applications():
             conn.close()
 
 
+# Contacts page
+@app.route("/contacts")
+def contacts():
+    conn = None
+    cursor = None
+
+    try:
+        # Connect to MySQL
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+
+        # Retrieve contacts with their associated company names
+        cursor.execute("""
+            SELECT
+                contacts.*,
+                companies.company_name
+            FROM contacts
+            JOIN companies
+                ON contacts.company_id = companies.company_id
+            ORDER BY companies.company_name, contacts.contact_name
+        """)
+
+        contact_list = cursor.fetchall()
+
+        # Send contact data to the HTML template
+        return render_template("contacts.html", contacts=contact_list)
+
+    except mysql.connector.Error:
+        app.logger.exception("Error loading contacts")
+        return "Unable to load contacts.", 503
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+
+        if conn is not None and conn.is_connected():
+            conn.close()
+
+
 # Run the application
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Contacts</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Company</th>
+            <th>Name</th>
+            <th>Title</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>LinkedIn URL</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for contact in contacts %}
+        <tr>
+            <td>{{ contact.company_name }}</td>
+            <td>{{ contact.contact_name }}</td>
+            <td>{{ contact.title or '' }}</td>
+            <td>{{ contact.email or '' }}</td>
+            <td>{{ contact.phone or '' }}</td>
+            <td>{{ contact.linkedin_url or '' }}</td>
+            <td>{{ contact.notes or '' }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7">No contacts found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
