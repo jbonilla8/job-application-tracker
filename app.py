@@ -410,6 +410,65 @@ def applications():
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
 
+        # Update an existing application when the edit form is submitted
+        if request.method == "POST" and request.form.get("form_action") == "edit":
+            application_id = request.form.get("application_id", type=int)
+            job_id = request.form.get("job_id", type=int)
+            application_date = request.form.get("application_date")
+            status = request.form.get("status")
+
+            # Validate required fields
+            if (
+                application_id is None
+                or job_id is None
+                or not application_date
+                or not status
+            ):
+                return "Application ID, job, date, and status are required.", 400
+
+            # Validate JSON interview data if provided
+            interview_data = request.form.get("interview_data", "").strip() or None
+
+            if interview_data:
+                try:
+                    interview_details = json.loads(interview_data)
+                except json.JSONDecodeError:
+                    return "Interview data must contain valid JSON.", 400
+
+                if not isinstance(interview_details, dict):
+                    return "Interview data must be a JSON object.", 400
+
+            # Get updated application information
+            application_data = (
+                job_id,
+                application_date,
+                status,
+                request.form.get("resume_version", "").strip() or None,
+                1 if request.form.get("cover_letter_sent") == "on" else 0,
+                interview_data,
+                application_id,
+            )
+
+            # Update the selected application in MySQL
+            cursor.execute(
+                """
+                UPDATE applications
+                SET job_id = %s,
+                    application_date = %s,
+                    status = %s,
+                    resume_version = %s,
+                    cover_letter_sent = %s,
+                    interview_data = %s
+                WHERE application_id = %s
+            """,
+                application_data,
+            )
+
+            conn.commit()
+
+            # Return to the Applications page
+            return redirect(url_for("applications"))
+
         # Add a new application when the form is submitted
         if request.method == "POST":
             job_id = request.form.get("job_id", type=int)
@@ -489,9 +548,23 @@ def applications():
 
         job_list = cursor.fetchall()
 
-        # Send application records and job options to the HTML template
+        # Retrieve the application selected for editing
+        edit_application = None
+        application_id = request.args.get("edit", type=int)
+
+        if application_id is not None:
+            cursor.execute(
+                "SELECT * FROM applications WHERE application_id = %s",
+                (application_id,),
+            )
+            edit_application = cursor.fetchone()
+
+        # Send application data, job options, and selected application to HTML
         return render_template(
-            "applications.html", applications=application_list, jobs=job_list
+            "applications.html",
+            applications=application_list,
+            jobs=job_list,
+            edit_application=edit_application,
         )
 
     except mysql.connector.Error:

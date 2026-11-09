@@ -14,6 +14,7 @@
             <th>Resume Version</th>
             <th>Cover Letter Sent</th>
             <th>Interview Data</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -26,16 +27,81 @@
             <td>{{ application.resume_version or '' }}</td>
             <td>{{ 'Yes' if application.cover_letter_sent else 'No' }}</td>
             <td>{{ application.interview_data or '' }}</td>
+            <td>
+                <a href="{{ url_for('applications', edit=application.application_id) }}">Edit</a>
+            </td>
         </tr>
         {% else %}
         <tr>
-            <td colspan="7">No applications found.</td>
+            <td colspan="8">No applications found.</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
+{% if edit_application %}
 
+<h3>Edit Application</h3>
+
+<form id="edit-application-form" method="POST" action="{{ url_for('applications') }}">
+
+    <!-- Identify the application being edited -->
+    <input type="hidden" name="form_action" value="edit">
+    <input type="hidden" name="application_id" value="{{ edit_application.application_id }}">
+
+    <p>
+        <label for="edit_job_id">Job:</label>
+        <select id="edit_job_id" name="job_id" required>
+            {% for job in jobs %}
+            <option value="{{ job.job_id }}" {% if job.job_id==edit_application.job_id %}selected{% endif %}>
+                {{ job.company_name }} - {{ job.job_title }}
+            </option>
+            {% endfor %}
+        </select>
+    </p>
+
+    <p>
+        <label for="edit_application_date">Application Date:</label>
+        <input type="date" id="edit_application_date" name="application_date"
+            value="{{ edit_application.application_date or '' }}" required>
+    </p>
+
+    <p>
+        <label for="edit_status">Status:</label>
+        <select id="edit_status" name="status" required>
+            {% for status in ['Applied', 'Screening', 'Interview', 'Offer', 'Rejected', 'Withdrawn'] %}
+            <option value="{{ status }}" {% if edit_application.status==status %}selected{% endif %}>
+                {{ status }}
+            </option>
+            {% endfor %}
+        </select>
+    </p>
+
+    <p>
+        <label for="edit_resume_version">Resume Version:</label>
+        <input type="text" id="edit_resume_version" name="resume_version"
+            value="{{ edit_application.resume_version or '' }}">
+    </p>
+
+    <p>
+        <label for="edit_cover_letter_sent">Cover Letter Sent:</label>
+        <input type="checkbox" id="edit_cover_letter_sent" name="cover_letter_sent" {% if
+            edit_application.cover_letter_sent %}checked{% endif %}>
+    </p>
+
+    <p>
+        <label for="edit_interview_data">Interview Data:</label>
+        <textarea id="edit_interview_data" name="interview_data">{{ edit_application.interview_data or '' }}</textarea>
+    </p>
+
+    <button type="submit" id="save-changes-button" disabled>Save Changes</button>
+    <a href="{{ url_for('applications') }}">Cancel</a>
+
+</form>
+
+{% endif %}
+
+{% if not edit_application %}
 <button type="button" onclick="document.getElementById('add-application-form').hidden = false">
     Add Application
 </button>
@@ -98,6 +164,45 @@
     </form>
 
 </div>
+{% endif %}
 
+
+{% if edit_application %}
+<script>
+    // Return to the Applications page when the browser is refreshed
+    const navigation = performance.getEntriesByType("navigation")[0];
+
+    if (navigation && navigation.type === "reload") {
+        window.location.replace("{{ url_for('applications') }}");
+    }
+
+    // Get the Edit Application form and Save Changes button
+    const editForm = document.getElementById("edit-application-form");
+    const saveButton = document.getElementById("save-changes-button");
+
+    // Store the original values of all editable fields
+    const fields = Array.from(
+        editForm.querySelectorAll('input:not([type="hidden"]), select, textarea')
+    );
+
+    const originalValues = fields.map(field =>
+        field.type === "checkbox" ? field.checked : field.value
+    );
+
+    // Enable Save Changes only when a field has changed
+    function checkForChanges() {
+        saveButton.disabled = !fields.some((field, index) => {
+            const currentValue = field.type === "checkbox"
+                ? field.checked
+                : field.value;
+
+            return currentValue !== originalValues[index];
+        });
+    }
+
+    editForm.addEventListener("input", checkForChanges);
+    editForm.addEventListener("change", checkForChanges);
+</script>
+{% endif %}
 
 {% endblock %}
