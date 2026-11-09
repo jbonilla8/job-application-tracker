@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Applications</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Company</th>
+            <th>Job Title</th>
+            <th>Application Date</th>
+            <th>Status</th>
+            <th>Resume Version</th>
+            <th>Cover Letter Sent</th>
+            <th>Interview Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for application in applications %}
+        <tr>
+            <td>{{ application.company_name }}</td>
+            <td>{{ application.job_title }}</td>
+            <td>{{ application.application_date or '' }}</td>
+            <td>{{ application.status or '' }}</td>
+            <td>{{ application.resume_version or '' }}</td>
+            <td>{{ 'Yes' if application.cover_letter_sent else 'No' }}</td>
+            <td>{{ application.interview_data or '' }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7">No applications found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<button type="button" onclick="document.getElementById('add-application-form').hidden = false">
+    Add Application
+</button>
+
+<div id="add-application-form" hidden>
+
+    <h3>Add Application</h3>
+
+    <form method="POST" action="{{ url_for('applications') }}">
+
+        <p>
+            <label for="job_id">Job:</label>
+            <select id="job_id" name="job_id" required>
+                <option value="">Select a job</option>
+                {% for job in jobs %}
+                <option value="{{ job.job_id }}">
+                    {{ job.company_name }} - {{ job.job_title }}
+                </option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="application_date">Application Date:</label>
+            <input type="date" id="application_date" name="application_date" required>
+        </p>
+
+        <p>
+            <label for="status">Status:</label>
+            <select id="status" name="status" required>
+                <option value="">Select a status</option>
+                <option value="Applied">Applied</option>
+                <option value="Screening">Screening</option>
+                <option value="Interview">Interview</option>
+                <option value="Offer">Offer</option>
+                <option value="Rejected">Rejected</option>
+                <option value="Withdrawn">Withdrawn</option>
+            </select>
+        </p>
+
+        <p>
+            <label for="resume_version">Resume Version:</label>
+            <input type="text" id="resume_version" name="resume_version">
+        </p>
+
+        <p>
+            <label for="cover_letter_sent">Cover Letter Sent:</label>
+            <input type="checkbox" id="cover_letter_sent" name="cover_letter_sent">
+        </p>
+
+        <p>
+            <label for="interview_data">Interview Data:</label>
+            <textarea id="interview_data" name="interview_data"
+                placeholder='{"round": 1, "notes": "Phone interview"}'></textarea>
+        </p>
+
+        <button type="submit">Add Application</button>
+        <a href="{{ url_for('applications') }}">Cancel</a>
+
+    </form>
+
+</div>
+
+
+{% endblock %}

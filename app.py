@@ -399,6 +399,64 @@ def jobs():
             conn.close()
 
 
+# Applications page
+@app.route("/applications")
+def applications():
+    conn = None
+    cursor = None
+
+    try:
+        # Connect to MySQL
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+
+        # Retrieve applications with their job titles and company names
+        cursor.execute("""
+            SELECT
+                applications.*,
+                jobs.job_title,
+                companies.company_name
+            FROM applications
+            JOIN jobs
+                ON applications.job_id = jobs.job_id
+            JOIN companies
+                ON jobs.company_id = companies.company_id
+            ORDER BY applications.application_date DESC
+        """)
+
+        application_list = cursor.fetchall()
+
+        # Retrieve available jobs for the Add Application dropdown
+        cursor.execute("""
+            SELECT
+                jobs.job_id,
+                jobs.job_title,
+                companies.company_name
+            FROM jobs
+            JOIN companies
+                ON jobs.company_id = companies.company_id
+            ORDER BY companies.company_name, jobs.job_title
+        """)
+
+        job_list = cursor.fetchall()
+
+        # Send application records and job options to the HTML template
+        return render_template(
+            "applications.html", applications=application_list, jobs=job_list
+        )
+
+    except mysql.connector.Error:
+        app.logger.exception("Error loading applications")
+        return "Unable to load applications.", 503
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+
+        if conn is not None and conn.is_connected():
+            conn.close()
+
+
 # Run the application
 if __name__ == "__main__":
     app.run(debug=True)
