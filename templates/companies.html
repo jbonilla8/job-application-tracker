@@ -27,6 +27,16 @@
             <td>{{ company.notes or '' }}</td>
             <td>
                 <a href="{{ url_for('companies', edit=company.company_id) }}">Edit</a>
+
+                <!-- Confirm before deleting a company -->
+                <form method="POST" action="{{ url_for('companies') }}"
+                    onsubmit="return confirm('Are you sure you want to delete this company?');">
+
+                    <input type="hidden" name="form_action" value="delete">
+                    <input type="hidden" name="company_id" value="{{ company.company_id }}">
+
+                    <button type="submit">Delete</button>
+                </form>
             </td>
         </tr>
         {% else %}

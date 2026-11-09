@@ -58,6 +58,29 @@ def companies():
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
 
+        # Delete a company when the delete form is submitted
+        if request.method == "POST" and request.form.get("form_action") == "delete":
+            company_id = request.form.get("company_id", type=int)
+
+            # Validate the company ID
+            if company_id is None:
+                return "Valid company ID is required.", 400
+
+            try:
+                # Delete the selected company from MySQL
+                cursor.execute(
+                    "DELETE FROM companies WHERE company_id = %s",
+                    (company_id,),
+                )
+                conn.commit()
+
+            except mysql.connector.IntegrityError:
+                # Prevent deleting companies with related jobs or contacts
+                return "Cannot delete a company with related jobs or contacts.", 409
+
+            # Return to the Companies page
+            return redirect(url_for("companies"))
+
         # Update an existing company when the edit form is submitted
         if request.method == "POST" and request.form.get("form_action") == "edit":
             company_id = request.form.get("company_id", type=int)

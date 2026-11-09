@@ -10,6 +10,7 @@
 4. "How to handle POST requests in Flask and save form data to MySQL"
 5. "How to update existing company records using Flask and MySQL"
 6. "How to enable the Save Changes button only when form data changes"
+7. "How to delete records in Flask with confirmation and foreign key protection"
 
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
@@ -18,6 +19,7 @@
 - Used ChatGPT to help pass data from Flask to HTML templates using Jinja.
 - Used ChatGPT to help handle form submissions in Flask and save company data to MySQL.
 - Used ChatGPT to help implement editing company records and detect changes in form fields.
+- Used ChatGPT to help implement company deletion with a confirmation dialog and handle foreign key errors in Flask.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.
@@ -35,3 +37,4 @@
 - Using a `.env` file keeps database credentials separate from the code and `.gitignore` prevents the file from being tracked by Git.
 - AI-generated code should always be reviewed, understood, and tested.
 - Best practice is to test each component individually for debugging purposes.
+- Foreign key constraints prevent deleting company records that are still referenced by jobs or contacts.
