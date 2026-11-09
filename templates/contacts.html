@@ -29,6 +29,17 @@
             <td>{{ contact.notes or '' }}</td>
             <td>
                 <a href="{{ url_for('contacts', edit=contact.contact_id) }}">Edit</a>
+
+                <!-- Confirm before deleting a contact -->
+                <form method="POST" action="{{ url_for('contacts') }}"
+                    onsubmit="return confirm('Are you sure you want to delete this contact?');"
+                    style="display: inline;">
+
+                    <input type="hidden" name="form_action" value="delete">
+                    <input type="hidden" name="contact_id" value="{{ contact.contact_id }}">
+
+                    <button type="submit">Delete</button>
+                </form>
             </td>
         </tr>
         {% else %}

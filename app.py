@@ -608,6 +608,24 @@ def contacts():
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
 
+        # Delete an existing contact when confirmed
+        if request.method == "POST" and request.form.get("form_action") == "delete":
+            contact_id = request.form.get("contact_id", type=int)
+
+            # Validate the contact ID
+            if contact_id is None:
+                return "A valid contact ID is required.", 400
+
+            # Delete the selected contact from MySQL
+            cursor.execute(
+                "DELETE FROM contacts WHERE contact_id = %s",
+                (contact_id,),
+            )
+            conn.commit()
+
+            # Return to the Contacts page
+            return redirect(url_for("contacts"))
+
         # Update an existing contact when the edit form is submitted
         if request.method == "POST" and request.form.get("form_action") == "edit":
             contact_id = request.form.get("contact_id", type=int)
