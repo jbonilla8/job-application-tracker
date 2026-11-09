@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from database import get_db
 import mysql.connector
+import json
 
 # Create the Flask application
 app = Flask(__name__)
@@ -192,7 +193,7 @@ def companies():
 
 
 # Jobs page
-@app.route("/jobs")
+@app.route("/jobs", methods=["GET", "POST"])
 def jobs():
     conn = None
     cursor = None
@@ -201,6 +202,60 @@ def jobs():
         # Connect to MySQL database
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
+
+        # Add a new job when the form is submitted
+        if request.method == "POST":
+            company_id = request.form.get("company_id", type=int)
+            job_title = request.form.get("job_title", "").strip()
+
+            # Validate the required fields
+            if company_id is None or not job_title:
+                return "Company and job title are required.", 400
+
+            # Validate the JSON requirements
+            requirements = request.form.get("requirements", "").strip() or None
+
+            if requirements:
+                try:
+                    skills = json.loads(requirements)
+                except json.JSONDecodeError:
+                    return "Requirements must contain valid JSON.", 400
+
+                if not isinstance(skills, list) or not all(
+                    isinstance(skill, str) for skill in skills
+                ):
+                    return "Requirements must be a JSON list of skills.", 400
+
+            # Get job information from the form
+            job_data = (
+                company_id,
+                job_title,
+                request.form.get("job_type") or None,
+                request.form.get("salary_min", type=int),
+                request.form.get("salary_max", type=int),
+                request.form.get("job_url") or None,
+                request.form.get("date_posted") or None,
+                requirements,
+                request.form.get("job_description") or None,
+                1 if request.form.get("is_active") == "on" else 0,
+            )
+
+            # Insert the new job into MySQL
+            cursor.execute(
+                """
+                INSERT INTO jobs (
+                    company_id, job_title, job_type,
+                    salary_min, salary_max, job_url,
+                    date_posted, requirements, job_description, is_active
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """,
+                job_data,
+            )
+            conn.commit()
+
+            # Return to the Jobs page
+            return redirect(url_for("jobs"))
 
         # Retrieve jobs with their company names
         cursor.execute("""
@@ -211,8 +266,20 @@ def jobs():
         """)
         job_list = cursor.fetchall()
 
-        # Send job data to the HTML template
-        return render_template("jobs.html", jobs=job_list)
+        # Retrieve companies for the Add Job dropdown
+        cursor.execute("""
+            SELECT company_id, company_name
+            FROM companies
+            ORDER BY company_name
+        """)
+        company_list = cursor.fetchall()
+
+        # Send job and company data to the HTML template
+        return render_template(
+            "jobs.html",
+            jobs=job_list,
+            companies=company_list,
+        )
 
     except mysql.connector.Error:
         # Log database errors and display message
