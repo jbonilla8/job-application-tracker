@@ -35,4 +35,63 @@
     </tbody>
 </table>
 
+<button type="button" onclick="document.getElementById('add-contact-form').hidden = false">
+    Add Contact
+</button>
+
+<div id="add-contact-form" hidden>
+
+    <h3>Add Contact</h3>
+
+    <form method="POST" action="{{ url_for('contacts') }}">
+
+        <p>
+            <label for="company_id">Company:</label>
+            <select id="company_id" name="company_id" required>
+                <option value="">Select a company</option>
+                {% for company in companies %}
+                <option value="{{ company.company_id }}">
+                    {{ company.company_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="contact_name">Name:</label>
+            <input type="text" id="contact_name" name="contact_name" required>
+        </p>
+
+        <p>
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title">
+        </p>
+
+        <p>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+        </p>
+
+        <p>
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone">
+        </p>
+
+        <p>
+            <label for="linkedin_url">LinkedIn URL:</label>
+            <input type="url" id="linkedin_url" name="linkedin_url">
+        </p>
+
+        <p>
+            <label for="notes">Notes:</label>
+            <textarea id="notes" name="notes"></textarea>
+        </p>
+
+        <button type="submit">Add Contact</button>
+        <a href="{{ url_for('contacts') }}">Cancel</a>
+
+    </form>
+
+</div>
+
 {% endblock %}

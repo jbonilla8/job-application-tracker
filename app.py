@@ -598,7 +598,7 @@ def applications():
 
 
 # Contacts page
-@app.route("/contacts")
+@app.route("/contacts", methods=["GET", "POST"])
 def contacts():
     conn = None
     cursor = None
@@ -607,6 +607,43 @@ def contacts():
         # Connect to MySQL
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
+
+        # Add a new contact when the form is submitted
+        if request.method == "POST":
+            company_id = request.form.get("company_id", type=int)
+            contact_name = request.form.get("contact_name", "").strip()
+
+            # Validate required fields
+            if company_id is None or not contact_name:
+                return "Company and contact name are required.", 400
+
+            # Get contact information from the form
+            contact_data = (
+                company_id,
+                contact_name,
+                request.form.get("title", "").strip() or None,
+                request.form.get("email", "").strip() or None,
+                request.form.get("phone", "").strip() or None,
+                request.form.get("linkedin_url", "").strip() or None,
+                request.form.get("notes", "").strip() or None,
+            )
+
+            # Save the new contact to MySQL
+            cursor.execute(
+                """
+                INSERT INTO contacts (
+                    company_id, contact_name, title,
+                    email, phone, linkedin_url, notes
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """,
+                contact_data,
+            )
+
+            conn.commit()
+
+            # Return to the Contacts page
+            return redirect(url_for("contacts"))
 
         # Retrieve contacts with their associated company names
         cursor.execute("""
@@ -621,8 +658,19 @@ def contacts():
 
         contact_list = cursor.fetchall()
 
-        # Send contact data to the HTML template
-        return render_template("contacts.html", contacts=contact_list)
+        # Retrieve companies for the Add Contact dropdown
+        cursor.execute("""
+            SELECT company_id, company_name
+            FROM companies
+            ORDER BY company_name
+        """)
+
+        company_list = cursor.fetchall()
+
+        # Send contact records and company options to the HTML template
+        return render_template(
+            "contacts.html", contacts=contact_list, companies=company_list
+        )
 
     except mysql.connector.Error:
         app.logger.exception("Error loading contacts")
