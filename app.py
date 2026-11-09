@@ -400,7 +400,7 @@ def jobs():
 
 
 # Applications page
-@app.route("/applications")
+@app.route("/applications", methods=["GET", "POST"])
 def applications():
     conn = None
     cursor = None
@@ -409,6 +409,55 @@ def applications():
         # Connect to MySQL
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
+
+        # Add a new application when the form is submitted
+        if request.method == "POST":
+            job_id = request.form.get("job_id", type=int)
+            application_date = request.form.get("application_date")
+            status = request.form.get("status")
+
+            # Validate required fields
+            if job_id is None or not application_date or not status:
+                return "Job, application date, and status are required.", 400
+
+            # Validate the JSON interview data if provided
+            interview_data = request.form.get("interview_data", "").strip() or None
+
+            if interview_data:
+                try:
+                    interview_details = json.loads(interview_data)
+                except json.JSONDecodeError:
+                    return "Interview data must contain valid JSON.", 400
+
+                if not isinstance(interview_details, dict):
+                    return "Interview data must be a JSON object.", 400
+
+            # Get application information from the form
+            application_data = (
+                job_id,
+                application_date,
+                status,
+                request.form.get("resume_version", "").strip() or None,
+                1 if request.form.get("cover_letter_sent") == "on" else 0,
+                interview_data,
+            )
+
+            # Save the new application to MySQL
+            cursor.execute(
+                """
+                INSERT INTO applications (
+                    job_id, application_date, status,
+                    resume_version, cover_letter_sent, interview_data
+                )
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """,
+                application_data,
+            )
+
+            conn.commit()
+
+            # Return to the Applications page
+            return redirect(url_for("applications"))
 
         # Retrieve applications with their job titles and company names
         cursor.execute("""
