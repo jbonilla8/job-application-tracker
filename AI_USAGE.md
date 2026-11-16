@@ -14,6 +14,7 @@
 8. "How to validate JSON input in Flask before saving it to MySQL"
 9. "How to make delete confirmation popups show which record will be deleted without displaying the localhost browser heading"
 10. "How to make a job matching feature that compares my skills to job requirements, ranks the jobs by match percentage, and shows which skills I'm missing"
+11. "How to add detail views for individual records in Flask so users can see their information without editing it"
 
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
@@ -26,6 +27,7 @@
 - Used ChatGPT to help validate JSON requirements before saving job records to MySQL.
 - Used ChatGPT to help implement custom HTML and JavaScript delete confirmation dialogs for all four tables.
 - Used ChatGPT to help build the Job Match algorithm to calculate match percentages and identify matching and missing skills.
+- Used ChatGPT to help create Flask routes and HTML templates for displaying individual record details.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.

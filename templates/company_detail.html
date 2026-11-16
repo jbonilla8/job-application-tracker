@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ company.company_name }}</h2>
+
+<h3>Company Details</h3>
+
+<p><strong>Industry:</strong> {{ company.industry or "Not provided" }}</p>
+<p><strong>Website:</strong> {{ company.website or "Not provided" }}</p>
+<p><strong>City:</strong> {{ company.city or "Not provided" }}</p>
+<p><strong>State:</strong> {{ company.state or "Not provided" }}</p>
+<p><strong>Notes:</strong> {{ company.notes or "Not provided" }}</p>
+
+<a href="{{ url_for('companies') }}">Back to Companies</a>
+{% endblock %}

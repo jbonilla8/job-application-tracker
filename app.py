@@ -192,6 +192,36 @@ def companies():
             conn.close()
 
 
+# View details for a single company
+@app.route("/companies/<int:company_id>")
+def company_detail(company_id):
+    conn = None
+    cursor = None
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+
+        # Retrieve the selected company
+        cursor.execute("SELECT * FROM companies WHERE company_id = %s", (company_id,))
+        company = cursor.fetchone()
+
+        if company is None:
+            return "Company not found.", 404
+
+        return render_template("company_detail.html", company=company)
+
+    except mysql.connector.Error:
+        app.logger.exception("Error loading company details")
+        return "Unable to load company details.", 503
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if conn is not None and conn.is_connected():
+            conn.close()
+
+
 # Jobs page
 @app.route("/jobs", methods=["GET", "POST"])
 def jobs():

@@ -26,6 +26,9 @@
             <td>{{ company.state or '' }}</td>
             <td>{{ company.notes or '' }}</td>
             <td>
+                <!-- Open the selected company's detail page -->
+                <a href="{{ url_for('companies') }}/{{ company.company_id }}">View</a>
+
                 <a href="{{ url_for('companies', edit=company.company_id) }}">Edit</a>
 
                 <!-- Confirm before deleting a company -->
