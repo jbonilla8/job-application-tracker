@@ -28,6 +28,9 @@
             <td>{{ 'Yes' if application.cover_letter_sent else 'No' }}</td>
             <td>{{ application.interview_data or '' }}</td>
             <td>
+                <!-- Open the selected application's detail page -->
+                <a href="{{ url_for('applications') }}/{{ application.application_id }}">View</a>
+
                 <a href="{{ url_for('applications', edit=application.application_id) }}">Edit</a>
 
                 <!-- Confirm before deleting an application -->

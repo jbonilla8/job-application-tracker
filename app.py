@@ -666,6 +666,50 @@ def applications():
             conn.close()
 
 
+# View details for a single application
+@app.route("/applications/<int:application_id>")
+def application_detail(application_id):
+    conn = None
+    cursor = None
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+
+        # Retrieve the application with its job and company
+        cursor.execute(
+            """
+            SELECT
+                applications.*,
+                jobs.job_title,
+                companies.company_name
+            FROM applications
+            JOIN jobs ON applications.job_id = jobs.job_id
+            JOIN companies ON jobs.company_id = companies.company_id
+            WHERE applications.application_id = %s
+        """,
+            (application_id,),
+        )
+
+        application = cursor.fetchone()
+
+        if application is None:
+            return "Application not found.", 404
+
+        return render_template("application_detail.html", application=application)
+
+    except mysql.connector.Error:
+        app.logger.exception("Error loading application details")
+        return "Unable to load application details.", 503
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+
+        if conn is not None and conn.is_connected():
+            conn.close()
+
+
 # Contacts page
 @app.route("/contacts", methods=["GET", "POST"])
 def contacts():

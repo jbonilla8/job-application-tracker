@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Application Details</h2>
+
+<p><strong>Company:</strong> {{ application.company_name }}</p>
+<p><strong>Job:</strong> {{ application.job_title }}</p>
+<p><strong>Application Date:</strong> {{ application.application_date }}</p>
+<p><strong>Status:</strong> {{ application.status }}</p>
+<p><strong>Resume Version:</strong> {{ application.resume_version or "Not provided" }}</p>
+<p><strong>Cover Letter Sent:</strong> {{ "Yes" if application.cover_letter_sent else "No" }}</p>
+<p><strong>Interview Data:</strong> {{ application.interview_data if application.interview_data is not none else "Not
+    provided" }}</p>
+
+<a href="{{ url_for('applications') }}">Back to Applications</a>
+{% endblock %}
