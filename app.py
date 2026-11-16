@@ -872,6 +872,46 @@ def contacts():
             conn.close()
 
 
+# View details for a single contact
+@app.route("/contacts/<int:contact_id>")
+def contact_detail(contact_id):
+    conn = None
+    cursor = None
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+
+        # Retrieve the contact and associated company
+        cursor.execute(
+            """
+            SELECT contacts.*, companies.company_name
+            FROM contacts
+            JOIN companies ON contacts.company_id = companies.company_id
+            WHERE contacts.contact_id = %s
+        """,
+            (contact_id,),
+        )
+
+        contact = cursor.fetchone()
+
+        if contact is None:
+            return "Contact not found.", 404
+
+        return render_template("contact_detail.html", contact=contact)
+
+    except mysql.connector.Error:
+        app.logger.exception("Error loading contact details")
+        return "Unable to load contact details.", 503
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+
+        if conn is not None and conn.is_connected():
+            conn.close()
+
+
 # Job Match page
 @app.route("/job-match")
 def job_match():

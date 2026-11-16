@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ contact.contact_name }}</h2>
+
+<h3>Contact Details</h3>
+
+<p><strong>Company:</strong> {{ contact.company_name }}</p>
+<p><strong>Title:</strong> {{ contact.title or "Not provided" }}</p>
+<p><strong>Email:</strong> {{ contact.email or "Not provided" }}</p>
+<p><strong>Phone:</strong> {{ contact.phone or "Not provided" }}</p>
+<p><strong>LinkedIn:</strong> {{ contact.linkedin_url or "Not provided" }}</p>
+<p><strong>Notes:</strong> {{ contact.notes or "Not provided" }}</p>
+
+<a href="{{ url_for('contacts') }}">Back to Contacts</a>
+{% endblock %}

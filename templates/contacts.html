@@ -28,6 +28,9 @@
             <td>{{ contact.linkedin_url or '' }}</td>
             <td>{{ contact.notes or '' }}</td>
             <td>
+                <!-- Open the selected contact's detail page -->
+                <a href="{{ url_for('contacts') }}/{{ contact.contact_id }}">View</a>
+
                 <a href="{{ url_for('contacts', edit=contact.contact_id) }}">Edit</a>
 
                 <!-- Confirm before deleting a contact -->
