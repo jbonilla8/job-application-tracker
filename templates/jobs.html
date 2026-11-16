@@ -34,6 +34,9 @@
             <td>{{ job.job_description or '' }}</td>
             <td>{{ 'Yes' if job.is_active else 'No' }}</td>
             <td>
+                <!-- Open the selected job's detail page -->
+                <a href="{{ url_for('jobs') }}/{{ job.job_id }}">View</a>
+
                 <a href="{{ url_for('jobs', edit=job.job_id) }}">Edit</a>
 
                 <!-- Confirm before deleting a job -->

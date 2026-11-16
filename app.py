@@ -429,6 +429,45 @@ def jobs():
             conn.close()
 
 
+# View details for a single job
+@app.route("/jobs/<int:job_id>")
+def job_detail(job_id):
+    conn = None
+    cursor = None
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+
+        # Retrieve the selected job and company name
+        cursor.execute(
+            """
+            SELECT jobs.*, companies.company_name
+            FROM jobs
+            JOIN companies ON jobs.company_id = companies.company_id
+            WHERE jobs.job_id = %s
+        """,
+            (job_id,),
+        )
+
+        job = cursor.fetchone()
+
+        if job is None:
+            return "Job not found.", 404
+
+        return render_template("job_detail.html", job=job)
+
+    except mysql.connector.Error:
+        app.logger.exception("Error loading job details")
+        return "Unable to load job details.", 503
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if conn is not None and conn.is_connected():
+            conn.close()
+
+
 # Applications page
 @app.route("/applications", methods=["GET", "POST"])
 def applications():
