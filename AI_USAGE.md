@@ -15,6 +15,7 @@
 9. "How to make delete confirmation popups show which record will be deleted without displaying the localhost browser heading"
 10. "How to make a job matching feature that compares my skills to job requirements, ranks the jobs by match percentage, and shows which skills I'm missing"
 11. "How to add detail views for individual records in Flask so users can see their information without editing it"
+12. "How to use Bootstrap to make the navigation responsive with a hamburger menu on smaller screens"
 
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
@@ -28,6 +29,7 @@
 - Used ChatGPT to help implement custom HTML and JavaScript delete confirmation dialogs for all four tables.
 - Used ChatGPT to help build the Job Match algorithm to calculate match percentages and identify matching and missing skills.
 - Used ChatGPT to help create Flask routes and HTML templates for displaying individual record details.
+- Used ChatGPT to help style the navigation bar with Bootstrap and add a mobile side menu.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.
@@ -45,6 +47,8 @@
 - Replaced the default browser confirmation popups with custom dialogs for a more consistent interface.
 - Changed the Job Match results from a table to a numbered list showing match percentages, skill counts, and missing skills to better match the project specification example.
 - Chose to display only jobs with matching skills instead of including 0% matches or jobs without specified requirements.
+- Added hamburger menu for navigation links on smaller screen sizes.
+- Removed the duplicate website title and adjusted the navigation spacing so the hamburger menu sits closer to the left edge on mobile.
 
 ## Lessons Learned
 - Using a `.env` file keeps database credentials separate from the code and `.gitignore` prevents the file from being tracked by Git.
