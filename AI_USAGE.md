@@ -16,6 +16,7 @@
 10. "How to make a job matching feature that compares my skills to job requirements, ranks the jobs by match percentage, and shows which skills I'm missing"
 11. "How to add detail views for individual records in Flask so users can see their information without editing it"
 12. "How to use Bootstrap to make the navigation responsive with a hamburger menu on smaller screens"
+13. "How to make a responsive navigation bar with Bootstrap, a mobile hamburger menu, and a way to highlight the current page"
 
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
@@ -30,6 +31,7 @@
 - Used ChatGPT to help build the Job Match algorithm to calculate match percentages and identify matching and missing skills.
 - Used ChatGPT to help create Flask routes and HTML templates for displaying individual record details.
 - Used ChatGPT to help style the navigation bar with Bootstrap and add a mobile side menu.
+- Used ChatGPT to help create a responsive Bootstrap navigation bar with a mobile side menu and active page highlighting.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.
@@ -49,6 +51,7 @@
 - Chose to display only jobs with matching skills instead of including 0% matches or jobs without specified requirements.
 - Added hamburger menu for navigation links on smaller screen sizes.
 - Removed the duplicate website title and adjusted the navigation spacing so the hamburger menu sits closer to the left edge on mobile.
+- Chose a subtle background highlight instead of an underline for the active navigation link and adjusted the styling to prevent the links from shifting.
 
 ## Lessons Learned
 - Using a `.env` file keeps database credentials separate from the code and `.gitignore` prevents the file from being tracked by Git.
