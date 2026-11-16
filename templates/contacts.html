@@ -2,7 +2,17 @@
 
 {% block content %}
 
-<h2>Contacts</h2>
+<div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+    <h2 class="mb-0">Contacts</h2>
+
+    {% if not edit_contact %}
+    <!-- Open the Add Contact popup -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addContactModal">
+        Add Contact
+    </button>
+    {% endif %}
+</div>
+
 
 <table>
     <thead>
@@ -52,6 +62,7 @@
         {% endfor %}
     </tbody>
 </table>
+
 
 <!-- Custom confirmation dialog for deleting a contact -->
 <dialog id="delete-contact-dialog">
@@ -128,62 +139,102 @@
 
 {% endif %}
 
+
 {% if not edit_contact %}
-<button type="button" onclick="document.getElementById('add-contact-form').hidden = false">
-    Add Contact
-</button>
 
-<div id="add-contact-form" hidden>
-    <h3>Add Contact</h3>
+<!-- Add Contact popup -->
+<div class="modal fade" id="addContactModal" tabindex="-1" aria-labelledby="addContactModalLabel" aria-hidden="true">
 
-    <form method="POST" action="{{ url_for('contacts') }}">
-        <p>
-            <label for="company_id">Company:</label>
-            <select id="company_id" name="company_id" required>
-                <option value="">Select a company</option>
-                {% for company in companies %}
-                <option value="{{ company.company_id }}">
-                    {{ company.company_name }}
-                </option>
-                {% endfor %}
-            </select>
-        </p>
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
 
-        <p>
-            <label for="contact_name">Name:</label>
-            <input type="text" id="contact_name" name="contact_name" required>
-        </p>
+            <div class="modal-header">
+                <h3 class="modal-title fs-5" id="addContactModalLabel">
+                    Add Contact
+                </h3>
 
-        <p>
-            <label for="title">Title:</label>
-            <input type="text" id="title" name="title">
-        </p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-        <p>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email">
-        </p>
+            <form method="POST" action="{{ url_for('contacts') }}">
 
-        <p>
-            <label for="phone">Phone:</label>
-            <input type="tel" id="phone" name="phone">
-        </p>
+                <div class="modal-body">
 
-        <p>
-            <label for="linkedin_url">LinkedIn URL:</label>
-            <input type="url" id="linkedin_url" name="linkedin_url">
-        </p>
+                    <div class="mb-3">
+                        <label for="company_id" class="form-label">
+                            Company
+                        </label>
+                        <select id="company_id" name="company_id" class="form-select" required>
+                            <option value="">Select a company</option>
+                            {% for company in companies %}
+                            <option value="{{ company.company_id }}">
+                                {{ company.company_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-        <p>
-            <label for="notes">Notes:</label>
-            <textarea id="notes" name="notes"></textarea>
-        </p>
+                    <div class="mb-3">
+                        <label for="contact_name" class="form-label">
+                            Name
+                        </label>
+                        <input type="text" id="contact_name" name="contact_name" class="form-control" required>
+                    </div>
 
-        <button type="submit">Add Contact</button>
-        <a href="{{ url_for('contacts') }}">Cancel</a>
-    </form>
+                    <div class="mb-3">
+                        <label for="title" class="form-label">
+                            Title
+                        </label>
+                        <input type="text" id="title" name="title" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">
+                            Email
+                        </label>
+                        <input type="email" id="email" name="email" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">
+                            Phone
+                        </label>
+                        <input type="tel" id="phone" name="phone" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="linkedin_url" class="form-label">
+                            LinkedIn URL
+                        </label>
+                        <input type="url" id="linkedin_url" name="linkedin_url" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">
+                            Notes
+                        </label>
+                        <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        Add Contact
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
 </div>
+
 {% endif %}
+
 
 {% if edit_contact %}
 <script>
@@ -222,6 +273,7 @@
     editForm.addEventListener("change", checkForChanges);
 </script>
 {% endif %}
+
 
 <script>
     // Store the contact form until deletion is confirmed

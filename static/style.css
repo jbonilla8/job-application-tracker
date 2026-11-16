@@ -1,0 +1,29 @@
+/* Style all data tables */
+main table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+main table th,
+main table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #dee2e6;
+}
+
+main table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+main table thead {
+    background-color: #f8f9fa;
+}
+
+/* Style page headings */
+main h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    border-left: 4px solid var(--bs-primary);
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+}

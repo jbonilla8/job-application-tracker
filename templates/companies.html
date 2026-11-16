@@ -2,7 +2,17 @@
 
 {% block content %}
 
-<h2>Companies</h2>
+<div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+    <h2 class="mb-0">Companies</h2>
+
+    {% if not edit_company %}
+    <!-- Open the Add Company popup -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCompanyModal">
+        Add Company
+    </button>
+    {% endif %}
+</div>
+
 
 <table>
     <thead>
@@ -33,7 +43,7 @@
 
                 <!-- Confirm before deleting a company -->
                 <form method="POST" action="{{ url_for('companies') }}" onsubmit="return openDeleteCompanyDialog(this);"
-                    data-name="{{ company.company_name }}">
+                    data-name="{{ company.company_name }}" style="display: inline;">
 
                     <input type="hidden" name="form_action" value="delete">
                     <input type="hidden" name="company_id" value="{{ company.company_id }}">
@@ -49,6 +59,7 @@
         {% endfor %}
     </tbody>
 </table>
+
 
 <!-- Custom confirmation dialog for deleting a company -->
 <dialog id="delete-company-dialog">
@@ -74,6 +85,7 @@
     <!-- Identify the selected company and form action -->
     <input type="hidden" name="form_action" value="edit">
     <input type="hidden" name="company_id" value="{{ edit_company.company_id }}">
+
     <p>
         <label for="edit_company_name">Company Name:</label>
         <input type="text" id="edit_company_name" name="company_name" value="{{ edit_company.company_name }}" required>
@@ -110,53 +122,88 @@
 
 {% endif %}
 
+
 {% if not edit_company %}
 
-<button type="button" onclick="document.getElementById('add-company-form').hidden = false">
-    Add Company
-</button>
+<!-- Add Company popup -->
+<div class="modal fade" id="addCompanyModal" tabindex="-1" aria-labelledby="addCompanyModalLabel" aria-hidden="true">
 
-<div id="add-company-form" hidden>
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
 
-    <h3>Add Company</h3>
+            <div class="modal-header">
+                <h3 class="modal-title fs-5" id="addCompanyModalLabel">
+                    Add Company
+                </h3>
 
-    <form method="POST" action="{{ url_for('companies') }}">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-        <p>
-            <label for="company_name">Company Name:</label>
-            <input type="text" id="company_name" name="company_name" required>
-        </p>
+            <form method="POST" action="{{ url_for('companies') }}">
 
-        <p>
-            <label for="industry">Industry:</label>
-            <input type="text" id="industry" name="industry">
-        </p>
+                <div class="modal-body">
 
-        <p>
-            <label for="website">Website:</label>
-            <input type="url" id="website" name="website">
-        </p>
+                    <div class="mb-3">
+                        <label for="company_name" class="form-label">
+                            Company Name
+                        </label>
+                        <input type="text" id="company_name" name="company_name" class="form-control" required>
+                    </div>
 
-        <p>
-            <label for="city">City:</label>
-            <input type="text" id="city" name="city">
-        </p>
+                    <div class="mb-3">
+                        <label for="industry" class="form-label">
+                            Industry
+                        </label>
+                        <input type="text" id="industry" name="industry" class="form-control">
+                    </div>
 
-        <p>
-            <label for="state">State:</label>
-            <input type="text" id="state" name="state">
-        </p>
+                    <div class="mb-3">
+                        <label for="website" class="form-label">
+                            Website
+                        </label>
+                        <input type="url" id="website" name="website" class="form-control">
+                    </div>
 
-        <p>
-            <label for="notes">Notes:</label>
-            <textarea id="notes" name="notes"></textarea>
-        </p>
+                    <div class="mb-3">
+                        <label for="city" class="form-label">
+                            City
+                        </label>
+                        <input type="text" id="city" name="city" class="form-control">
+                    </div>
 
-        <button type="submit">Add Company</button>
-        <a href="{{ url_for('companies') }}">Cancel</a>
-    </form>
+                    <div class="mb-3">
+                        <label for="state" class="form-label">
+                            State
+                        </label>
+                        <input type="text" id="state" name="state" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">
+                            Notes
+                        </label>
+                        <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        Add Company
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
 </div>
+
 {% endif %}
+
 
 {% if edit_company %}
 <script>
@@ -172,7 +219,10 @@
     const saveButton = document.getElementById("save-changes-button");
 
     // Store the original values of all editable fields
-    const fields = Array.from(editForm.querySelectorAll('input:not([type="hidden"]), textarea'));
+    const fields = Array.from(
+        editForm.querySelectorAll('input:not([type="hidden"]), textarea')
+    );
+
     const originalValues = fields.map(field => field.value);
 
     // Enable Save Changes only when a field has been modified
@@ -181,9 +231,9 @@
             (field, index) => field.value !== originalValues[index]
         );
     });
-
 </script>
 {% endif %}
+
 
 <script>
     // Store the company form until the user confirms deletion
