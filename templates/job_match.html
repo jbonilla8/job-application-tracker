@@ -4,50 +4,156 @@
 
 <h2>Job Match</h2>
 
-<p>Enter your skills to find matching jobs.</p>
+<p class="text-body-secondary mb-4">
+    Enter your skills to find jobs that match your qualifications.
+</p>
 
-<form method="GET" action="{{ url_for('job_match') }}">
-    <p>
-        <label for="skills">Your Skills:</label>
-        <input type="text" id="skills" name="skills" placeholder="Python, SQL, Flask" required>
-    </p>
+<!-- Skills search form -->
+<div class="bg-white border rounded-3 shadow-sm p-3 p-lg-4 mb-4">
 
-    <button type="submit">Find Matching Jobs</button>
-</form>
+    <form method="GET" action="{{ url_for('job_match') }}">
+
+        <div class="row g-3 align-items-end">
+
+            <div class="col-12 col-lg-8">
+                <label for="skills" class="form-label fw-semibold">
+                    Your Skills
+                </label>
+
+                <input type="text" id="skills" name="skills" class="form-control" placeholder="Python, SQL, Flask"
+                    value="{{ skills or '' }}" required>
+            </div>
+
+            <div class="col-12 col-lg-auto">
+                <button type="submit" class="btn btn-primary">
+                    Find Matching Jobs
+                </button>
+            </div>
+
+        </div>
+
+        <p class="text-body-secondary small mt-3 mb-0">
+            Separate multiple skills with commas.
+        </p>
+
+    </form>
+
+</div>
+
 
 {% if skills %}
 
-<h3>Matching Jobs</h3>
+<!-- Matching jobs results -->
+<div class="bg-white border rounded-3 shadow-sm p-3 p-lg-4">
 
-<p>Entered skills: {{ skills }}</p>
+    <div class="mb-4">
+        <h3 class="h5 fw-semibold mb-1">
+            Matching Jobs
+        </h3>
 
-{% if jobs %}
-
-<ol>
-    {% for job in jobs %}
-    <li>
-        <strong>{{ job.job_title }}</strong>
-        at {{ job.company_name }}
-        — {{ job.match_percentage }}%
-        ({{ job.matched_count }}/{{ job.total_required }} skills)
-
-        <p>
-            Missing:
-            {% if job.missing_skills %}
-            {{ job.missing_skills | join(', ') }}
-            {% else %}
-            None
-            {% endif %}
+        <p class="text-body-secondary small mb-0">
+            Results ranked by how closely your skills match each job's requirements.
         </p>
-    </li>
+    </div>
+
+    {% if jobs %}
+
+    {% for job in jobs %}
+
+    <div class="{% if not loop.last %}border-bottom pb-4 mb-4{% endif %}">
+
+        <!-- Job title, company, and match percentage -->
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+
+            <div>
+                <h4 class="h6 fw-semibold mb-1">
+                    {{ loop.index }}. {{ job.job_title }}
+                </h4>
+
+                <p class="text-body-secondary mb-0">
+                    {{ job.company_name }}
+                </p>
+            </div>
+
+            <div class="text-end">
+                <span class="fs-5 fw-bold text-primary">
+                    {{ job.match_percentage }}%
+                </span>
+
+                <p class="text-body-secondary small mb-0">
+                    {{ job.matched_count }}/{{ job.total_required }} skills matched
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Skill match progress bar -->
+        <div class="progress mb-3" style="height: 8px;">
+
+            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ job.match_percentage }}%;"
+                aria-valuenow="{{ job.match_percentage }}" aria-valuemin="0" aria-valuemax="100">
+            </div>
+
+        </div>
+
+        <!-- Matching skills -->
+        <div class="mb-3">
+            <p class="fw-semibold small mb-2">
+                Matching Skills
+            </p>
+
+            <div class="d-flex flex-wrap gap-3">
+                {% for skill in job.matching_skills %}
+                <span class="d-inline-flex align-items-center gap-1 small text-success fw-semibold">
+                    <span aria-hidden="true">✓</span>
+                    {{ skill }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Missing skills -->
+        <div>
+            <p class="fw-semibold small mb-2">
+                Missing Skills
+            </p>
+
+            {% if job.missing_skills %}
+
+            <div class="d-flex flex-wrap gap-2">
+
+                {% for skill in job.missing_skills %}
+                <span class="badge rounded-pill text-bg-light border
+                    text-body-secondary fw-normal px-3 py-2">
+                    {{ skill }}
+                </span>
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <span class="text-success small fw-medium">
+                All required skills matched!
+            </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
     {% endfor %}
-</ol>
 
-{% else %}
+    {% else %}
 
-<p>No matching jobs found.</p>
+    <p class="text-body-secondary mb-0">
+        No matching jobs found. Try entering different skills.
+    </p>
 
-{% endif %}
+    {% endif %}
+
+</div>
 
 {% endif %}
 

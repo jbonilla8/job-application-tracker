@@ -973,6 +973,15 @@ def job_match():
                     job["matched_count"] = len(matching_skills)
                     job["total_required"] = len(required_skills)
 
+                    # Identify the skills the user already has
+                    job["matching_skills"] = [
+                        skill.strip()
+                        for skill in requirements
+                        if isinstance(skill, str)
+                        and skill.strip()
+                        and skill.strip().lower() in matching_skills
+                    ]
+
                     # Identify the skills the user is missing
                     job["missing_skills"] = [
                         skill

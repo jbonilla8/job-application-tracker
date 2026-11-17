@@ -20,6 +20,8 @@
 14. "How to use Bootstrap modals"
 15. "How to fix a Bootstrap modal that doesn't scroll when the form has too many fields"
 16. "How to make the tables responsive so they scroll horizontally on smaller screens"
+17. "How to use Bootstrap progress bars"
+18. "How to show matching skills above missing skills in the Job Match results"
 
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
@@ -40,6 +42,9 @@
 - Used ChatGPT to help convert the Edit forms for Companies, Jobs, Applications, and Contacts into Bootstrap modals while keeping the existing functionality.
 - Used ChatGPT to help fix the modal scrolling issue so the form fields can scroll while the buttons stay visible.
 - Used ChatGPT to help make the tables responsive using Bootstrap so they scroll horizontally on smaller screens.
+- Used ChatGPT to help redesign the Dashboard with a cleaner layout and progress bars for application statuses.
+- Used ChatGPT to help style the Job Match form and ranked results with Bootstrap.
+- Used ChatGPT to help display matching skills alongside missing skills without changing the matching algorithm.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.
@@ -68,6 +73,10 @@
 - Noticed that the Edit Job modal wasn't scrolling properly and added a shared CSS fix in style.css so it works across the website.
 - Chose to use compact outlined buttons with different colors for View, Edit, and Delete.
 - Applied the same responsive table layout and action button styling across Companies, Jobs, Applications, and Contacts.
+- Chose to use one simple statistics section instead of separate cards for each Dashboard statistic.
+- Removed the progress bar for Total Applications because it would always show 100%.
+- Simplified the Dashboard by removing unnecessary headings and descriptions.
+- Changed the matching skill badges to green checkmarks and text without pill backgrounds.
 
 ## Lessons Learned
 - Using a `.env` file keeps database credentials separate from the code and `.gitignore` prevents the file from being tracked by Git.
