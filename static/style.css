@@ -50,3 +50,16 @@ input[type="button"]:not(:disabled),
 [role="button"] {
     cursor: pointer;
 }
+
+/* Keep table content on one line when possible */
+main .table-responsive table th,
+main .table-responsive table td {
+    white-space: nowrap;
+}
+
+/* Prevent long values from taking up too much space */
+main .table-responsive table td {
+    max-width: 18rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
