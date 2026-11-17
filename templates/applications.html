@@ -13,56 +13,70 @@
     {% endif %}
 </div>
 
+<!-- Allow the Applications table to scroll horizontally on smaller screens -->
+<div class="table-responsive">
+    <table>
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Job Title</th>
+                <th>Application Date</th>
+                <th>Status</th>
+                <th>Resume Version</th>
+                <th>Cover Letter Sent</th>
+                <th>Interview Data</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in applications %}
+            <tr>
+                <td>{{ application.company_name }}</td>
+                <td>{{ application.job_title }}</td>
+                <td>{{ application.application_date or '' }}</td>
+                <td>{{ application.status or '' }}</td>
+                <td>{{ application.resume_version or '' }}</td>
+                <td>{{ 'Yes' if application.cover_letter_sent else 'No' }}</td>
+                <td>{{ application.interview_data or '' }}</td>
+                <td>
+                    <div class="d-inline-flex align-items-center gap-2 text-nowrap">
 
-<table>
-    <thead>
-        <tr>
-            <th>Company</th>
-            <th>Job Title</th>
-            <th>Application Date</th>
-            <th>Status</th>
-            <th>Resume Version</th>
-            <th>Cover Letter Sent</th>
-            <th>Interview Data</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for application in applications %}
-        <tr>
-            <td>{{ application.company_name }}</td>
-            <td>{{ application.job_title }}</td>
-            <td>{{ application.application_date or '' }}</td>
-            <td>{{ application.status or '' }}</td>
-            <td>{{ application.resume_version or '' }}</td>
-            <td>{{ 'Yes' if application.cover_letter_sent else 'No' }}</td>
-            <td>{{ application.interview_data or '' }}</td>
-            <td>
-                <!-- Open the selected application's detail page -->
-                <a href="{{ url_for('applications') }}/{{ application.application_id }}">View</a>
+                        <!-- Open the selected application's detail page -->
+                        <a href="{{ url_for('applications') }}/{{ application.application_id }}"
+                            class="btn btn-sm btn-outline-primary">
+                            View
+                        </a>
 
-                <a href="{{ url_for('applications', edit=application.application_id) }}">Edit</a>
+                        <a href="{{ url_for('applications', edit=application.application_id) }}"
+                            class="btn btn-sm btn-outline-secondary">
+                            Edit
+                        </a>
 
-                <!-- Confirm before deleting an application -->
-                <form method="POST" action="{{ url_for('applications') }}"
-                    onsubmit="return openDeleteApplicationDialog(this);" data-title="{{ application.job_title }}"
-                    data-company="{{ application.company_name }}" style="display: inline;">
+                        <!-- Confirm before deleting an application -->
+                        <form method="POST" action="{{ url_for('applications') }}"
+                            onsubmit="return openDeleteApplicationDialog(this);"
+                            data-title="{{ application.job_title }}" data-company="{{ application.company_name }}"
+                            class="m-0">
 
-                    <input type="hidden" name="form_action" value="delete">
-                    <input type="hidden" name="application_id" value="{{ application.application_id }}">
+                            <input type="hidden" name="form_action" value="delete">
+                            <input type="hidden" name="application_id" value="{{ application.application_id }}">
 
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="8">No applications found.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                Delete
+                            </button>
+                        </form>
 
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8">No applications found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <!-- Custom confirmation dialog for deleting an application -->
 <dialog id="delete-application-dialog">

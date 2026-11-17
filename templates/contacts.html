@@ -13,56 +13,69 @@
     {% endif %}
 </div>
 
+<!-- Allow the Contacts table to scroll horizontally on smaller screens -->
+<div class="table-responsive">
+    <table>
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Name</th>
+                <th>Title</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>LinkedIn URL</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contact in contacts %}
+            <tr>
+                <td>{{ contact.company_name }}</td>
+                <td>{{ contact.contact_name }}</td>
+                <td>{{ contact.title or '' }}</td>
+                <td>{{ contact.email or '' }}</td>
+                <td>{{ contact.phone or '' }}</td>
+                <td>{{ contact.linkedin_url or '' }}</td>
+                <td>{{ contact.notes or '' }}</td>
+                <td>
+                    <div class="d-inline-flex align-items-center gap-2 text-nowrap">
 
-<table>
-    <thead>
-        <tr>
-            <th>Company</th>
-            <th>Name</th>
-            <th>Title</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>LinkedIn URL</th>
-            <th>Notes</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for contact in contacts %}
-        <tr>
-            <td>{{ contact.company_name }}</td>
-            <td>{{ contact.contact_name }}</td>
-            <td>{{ contact.title or '' }}</td>
-            <td>{{ contact.email or '' }}</td>
-            <td>{{ contact.phone or '' }}</td>
-            <td>{{ contact.linkedin_url or '' }}</td>
-            <td>{{ contact.notes or '' }}</td>
-            <td>
-                <!-- Open the selected contact's detail page -->
-                <a href="{{ url_for('contacts') }}/{{ contact.contact_id }}">View</a>
+                        <!-- Open the selected contact's detail page -->
+                        <a href="{{ url_for('contacts') }}/{{ contact.contact_id }}"
+                            class="btn btn-sm btn-outline-primary">
+                            View
+                        </a>
 
-                <a href="{{ url_for('contacts', edit=contact.contact_id) }}">Edit</a>
+                        <a href="{{ url_for('contacts', edit=contact.contact_id) }}"
+                            class="btn btn-sm btn-outline-secondary">
+                            Edit
+                        </a>
 
-                <!-- Confirm before deleting a contact -->
-                <form method="POST" action="{{ url_for('contacts') }}" onsubmit="return openDeleteContactDialog(this);"
-                    data-name="{{ contact.contact_name }}" data-company="{{ contact.company_name }}"
-                    style="display: inline;">
+                        <!-- Confirm before deleting a contact -->
+                        <form method="POST" action="{{ url_for('contacts') }}"
+                            onsubmit="return openDeleteContactDialog(this);" data-name="{{ contact.contact_name }}"
+                            data-company="{{ contact.company_name }}" class="m-0">
 
-                    <input type="hidden" name="form_action" value="delete">
-                    <input type="hidden" name="contact_id" value="{{ contact.contact_id }}">
+                            <input type="hidden" name="form_action" value="delete">
+                            <input type="hidden" name="contact_id" value="{{ contact.contact_id }}">
 
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="8">No contacts found.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                Delete
+                            </button>
+                        </form>
 
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8">No contacts found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <!-- Custom confirmation dialog for deleting a contact -->
 <dialog id="delete-contact-dialog">

@@ -19,6 +19,7 @@
 13. "How to make a responsive navigation bar with Bootstrap, a mobile hamburger menu, and a way to highlight the current page"
 14. "How to use Bootstrap modals"
 15. "How to fix a Bootstrap modal that doesn't scroll when the form has too many fields"
+16. "How to make the tables responsive so they scroll horizontally on smaller screens"
 
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
@@ -38,6 +39,7 @@
 - Used ChatGPT to help convert the Add forms into Bootstrap modals with styled inputs and buttons.
 - Used ChatGPT to help convert the Edit forms for Companies, Jobs, Applications, and Contacts into Bootstrap modals while keeping the existing functionality.
 - Used ChatGPT to help fix the modal scrolling issue so the form fields can scroll while the buttons stay visible.
+- Used ChatGPT to help make the tables responsive using Bootstrap so they scroll horizontally on smaller screens.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.
@@ -64,6 +66,8 @@
 - Chose to apply table and heading styles globally through style.css instead of styling each page separately.
 - Chose to make the Edit forms match the Add forms instead of having them appear below the tables.
 - Noticed that the Edit Job modal wasn't scrolling properly and added a shared CSS fix in style.css so it works across the website.
+- Chose to use compact outlined buttons with different colors for View, Edit, and Delete.
+- Applied the same responsive table layout and action button styling across Companies, Jobs, Applications, and Contacts.
 
 ## Lessons Learned
 - Using a `.env` file keeps database credentials separate from the code and `.gitignore` prevents the file from being tracked by Git.

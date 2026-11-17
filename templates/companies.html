@@ -13,53 +13,67 @@
     {% endif %}
 </div>
 
+<!-- Allow the Companies table to scroll horizontally on smaller screens -->
+<div class="table-responsive">
+    <table>
+        <thead>
+            <tr>
+                <th>Company Name</th>
+                <th>Industry</th>
+                <th>Website</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for company in companies %}
+            <tr>
+                <td>{{ company.company_name }}</td>
+                <td>{{ company.industry or '' }}</td>
+                <td>{{ company.website or '' }}</td>
+                <td>{{ company.city or '' }}</td>
+                <td>{{ company.state or '' }}</td>
+                <td>{{ company.notes or '' }}</td>
+                <td>
+                    <div class="d-inline-flex align-items-center gap-2 text-nowrap">
 
-<table>
-    <thead>
-        <tr>
-            <th>Company Name</th>
-            <th>Industry</th>
-            <th>Website</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Notes</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for company in companies %}
-        <tr>
-            <td>{{ company.company_name }}</td>
-            <td>{{ company.industry or '' }}</td>
-            <td>{{ company.website or '' }}</td>
-            <td>{{ company.city or '' }}</td>
-            <td>{{ company.state or '' }}</td>
-            <td>{{ company.notes or '' }}</td>
-            <td>
-                <!-- Open the selected company's detail page -->
-                <a href="{{ url_for('companies') }}/{{ company.company_id }}">View</a>
+                        <!-- Open the selected company's detail page -->
+                        <a href="{{ url_for('companies') }}/{{ company.company_id }}"
+                            class="btn btn-sm btn-outline-primary">
+                            View
+                        </a>
 
-                <a href="{{ url_for('companies', edit=company.company_id) }}">Edit</a>
+                        <a href="{{ url_for('companies', edit=company.company_id) }}"
+                            class="btn btn-sm btn-outline-secondary">
+                            Edit
+                        </a>
 
-                <!-- Confirm before deleting a company -->
-                <form method="POST" action="{{ url_for('companies') }}" onsubmit="return openDeleteCompanyDialog(this);"
-                    data-name="{{ company.company_name }}" style="display: inline;">
+                        <!-- Confirm before deleting a company -->
+                        <form method="POST" action="{{ url_for('companies') }}"
+                            onsubmit="return openDeleteCompanyDialog(this);" data-name="{{ company.company_name }}"
+                            class="m-0">
 
-                    <input type="hidden" name="form_action" value="delete">
-                    <input type="hidden" name="company_id" value="{{ company.company_id }}">
+                            <input type="hidden" name="form_action" value="delete">
+                            <input type="hidden" name="company_id" value="{{ company.company_id }}">
 
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="7">No companies found.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                Delete
+                            </button>
+                        </form>
 
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7">No companies found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <!-- Custom confirmation dialog for deleting a company -->
 <dialog id="delete-company-dialog">
