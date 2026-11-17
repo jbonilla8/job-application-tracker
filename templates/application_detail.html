@@ -1,16 +1,113 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Application Details</h2>
 
-<p><strong>Company:</strong> {{ application.company_name }}</p>
-<p><strong>Job:</strong> {{ application.job_title }}</p>
-<p><strong>Application Date:</strong> {{ application.application_date }}</p>
-<p><strong>Status:</strong> {{ application.status }}</p>
-<p><strong>Resume Version:</strong> {{ application.resume_version or "Not provided" }}</p>
-<p><strong>Cover Letter Sent:</strong> {{ "Yes" if application.cover_letter_sent else "No" }}</p>
-<p><strong>Interview Data:</strong> {{ application.interview_data if application.interview_data is not none else "Not
-    provided" }}</p>
+<h2>{{ application.job_title }}</h2>
 
-<a href="{{ url_for('applications') }}">Back to Applications</a>
+<!-- Application information -->
+<div class="bg-white border rounded-3 shadow-sm p-3 p-lg-4">
+
+    <h3 class="h5 fw-semibold mb-4">
+        Application Details
+    </h3>
+
+    <div class="row g-4">
+
+        <!-- Company -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Company
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ application.company_name }}
+            </p>
+        </div>
+
+        <!-- Job -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Job
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ application.job_title }}
+            </p>
+        </div>
+
+        <!-- Application Date -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Application Date
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ application.application_date }}
+            </p>
+        </div>
+
+        <!-- Status -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Status
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ application.status or "Not provided" }}
+            </p>
+        </div>
+
+        <!-- Resume Version -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Resume Version
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ application.resume_version or "Not provided" }}
+            </p>
+        </div>
+
+        <!-- Cover Letter Sent -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Cover Letter Sent
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ "Yes" if application.cover_letter_sent else "No" }}
+            </p>
+        </div>
+
+    </div>
+
+    <hr class="border-secondary-subtle my-4">
+
+    <!-- Interview Data -->
+    <div>
+        <p class="text-body-secondary small mb-1">
+            Interview Data
+        </p>
+
+        {% if application.interview_data %}
+        {% if application.interview_data is mapping %}
+        <pre class="mb-0 text-break"
+            style="white-space: pre-wrap;">{{ application.interview_data | tojson(indent=2) }}</pre>
+        {% else %}
+        <p class="mb-0 text-break" style="white-space: pre-wrap;">{{ application.interview_data }}</p>
+        {% endif %}
+        {% else %}
+        <p class="mb-0 text-body-secondary">
+            Not provided
+        </p>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Return to the Applications list -->
+<a href="{{ url_for('applications') }}" class="btn btn-outline-secondary mt-4">
+    &larr; Back to Applications
+</a>
+
 {% endblock %}

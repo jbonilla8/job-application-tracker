@@ -1,19 +1,130 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <h2>{{ job.job_title }}</h2>
 
-<h3>Job Details</h3>
+<!-- Job information -->
+<div class="bg-white border rounded-3 shadow-sm p-3 p-lg-4">
 
-<p><strong>Company:</strong> {{ job.company_name }}</p>
-<p><strong>Job Type:</strong> {{ job.job_type or "Not provided" }}</p>
-<p><strong>Minimum Salary:</strong> {{ job.salary_min if job.salary_min is not none else "Not provided" }}</p>
-<p><strong>Maximum Salary:</strong> {{ job.salary_max if job.salary_max is not none else "Not provided" }}</p>
-<p><strong>Posting URL:</strong> {{ job.job_url or "Not provided" }}</p>
-<p><strong>Date Posted:</strong> {{ job.date_posted or "Not provided" }}</p>
-<p><strong>Status:</strong> {{ "Active" if job.is_active else "Inactive" }}</p>
-<p><strong>Description:</strong> {{ job.job_description or "Not provided" }}</p>
-<p><strong>Requirements:</strong> {{ job.requirements or "Not provided" }}</p>
+    <h3 class="h5 fw-semibold mb-4">
+        Job Details
+    </h3>
 
-<a href="{{ url_for('jobs') }}">Back to Jobs</a>
+    <div class="row g-4">
+
+        <!-- Company -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Company
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ job.company_name }}
+            </p>
+        </div>
+
+        <!-- Job Type -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Job Type
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ job.job_type or "Not provided" }}
+            </p>
+        </div>
+
+        <!-- Minimum Salary -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Minimum Salary
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ "${:,.0f}".format(job.salary_min) if job.salary_min is not none else "Not provided" }}
+            </p>
+        </div>
+
+        <!-- Maximum Salary -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Maximum Salary
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ "${:,.0f}".format(job.salary_max) if job.salary_max is not none else "Not provided" }}
+            </p>
+        </div>
+
+        <!-- Posting URL -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Posting URL
+            </p>
+
+            {% if job.job_url %}
+            <a href="{{ job.job_url }}" target="_blank" rel="noopener noreferrer" class="text-break">
+                {{ job.job_url }}
+            </a>
+            {% else %}
+            <p class="text-body-secondary mb-0">
+                Not provided
+            </p>
+            {% endif %}
+        </div>
+
+        <!-- Date Posted -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Date Posted
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ job.date_posted or "Not provided" }}
+            </p>
+        </div>
+
+        <!-- Status -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Status
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ "Active" if job.is_active else "Inactive" }}
+            </p>
+        </div>
+
+    </div>
+
+    <hr class="border-secondary-subtle my-4">
+
+    <!-- Description -->
+    <div>
+        <p class="text-body-secondary small mb-1">
+            Description
+        </p>
+
+        <p class="mb-0 text-break" style="white-space: pre-wrap;">{{ job.job_description or "Not provided" }}</p>
+    </div>
+
+    <hr class="border-secondary-subtle my-4">
+
+    <!-- Requirements -->
+    <div>
+        <p class="text-body-secondary small mb-1">
+            Requirements
+        </p>
+
+        <p class="mb-0 text-break" style="white-space: pre-wrap;">{{ job.requirements or "Not provided" }}</p>
+    </div>
+
+</div>
+
+<!-- Return to the Jobs list -->
+<a href="{{ url_for('jobs') }}" class="btn btn-outline-secondary mt-4">
+    &larr; Back to Jobs
+</a>
+
 {% endblock %}

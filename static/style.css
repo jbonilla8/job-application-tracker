@@ -41,3 +41,12 @@ main h2 {
     min-height: 0;
     overflow-y: auto;
 }
+
+/* Show a pointer cursor on clickable elements */
+a[href],
+button:not(:disabled),
+input[type="submit"]:not(:disabled),
+input[type="button"]:not(:disabled),
+[role="button"] {
+    cursor: pointer;
+}

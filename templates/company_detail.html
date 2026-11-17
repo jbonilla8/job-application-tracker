@@ -1,15 +1,86 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <h2>{{ company.company_name }}</h2>
 
-<h3>Company Details</h3>
+<!-- Company information -->
+<div class="bg-white border rounded-3 shadow-sm p-3 p-lg-4">
 
-<p><strong>Industry:</strong> {{ company.industry or "Not provided" }}</p>
-<p><strong>Website:</strong> {{ company.website or "Not provided" }}</p>
-<p><strong>City:</strong> {{ company.city or "Not provided" }}</p>
-<p><strong>State:</strong> {{ company.state or "Not provided" }}</p>
-<p><strong>Notes:</strong> {{ company.notes or "Not provided" }}</p>
+    <h3 class="h5 fw-semibold mb-4">
+        Company Details
+    </h3>
 
-<a href="{{ url_for('companies') }}">Back to Companies</a>
+    <div class="row g-4">
+
+        <!-- Industry -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Industry
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ company.industry or "Not provided" }}
+            </p>
+        </div>
+
+        <!-- Website -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                Website
+            </p>
+
+            {% if company.website %}
+            <a href="{{ company.website }}" target="_blank" rel="noopener noreferrer" class="text-break">
+                {{ company.website }}
+            </a>
+            {% else %}
+            <p class="text-body-secondary mb-0">
+                Not provided
+            </p>
+            {% endif %}
+        </div>
+
+        <!-- City -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                City
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ company.city or "Not provided" }}
+            </p>
+        </div>
+
+        <!-- State -->
+        <div class="col-12 col-md-6">
+            <p class="text-body-secondary small mb-1">
+                State
+            </p>
+
+            <p class="fw-medium mb-0">
+                {{ company.state or "Not provided" }}
+            </p>
+        </div>
+
+    </div>
+
+    <hr class="border-secondary-subtle my-4">
+
+    <!-- Notes -->
+    <div>
+        <p class="text-body-secondary small mb-1">
+            Notes
+        </p>
+
+        <p class="mb-0" style="white-space: pre-wrap;">{{ company.notes or "Not provided" }}</p>
+    </div>
+
+</div>
+
+<!-- Return to the Companies list -->
+<a href="{{ url_for('companies') }}" class="btn btn-outline-secondary mt-4">
+    &larr; Back to Companies
+</a>
+
 {% endblock %}
