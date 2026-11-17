@@ -22,6 +22,11 @@
 16. "How to make the tables responsive so they scroll horizontally on smaller screens"
 17. "How to use Bootstrap progress bars"
 18. "How to show matching skills above missing skills in the Job Match results"
+19. "How do I create a schema.sql file using my existing MySQL table structures?"
+20. "What should I put in requirements.txt for my Flask and MySQL project?"
+21. "How do I update my README with installation and setup instructions?"
+22. "How do I make the setup instructions work for both macOS and Windows?"
+23. "How do I check that my .gitignore protects my database password?"
 
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
@@ -45,6 +50,10 @@
 - Used ChatGPT to help redesign the Dashboard with a cleaner layout and progress bars for application statuses.
 - Used ChatGPT to help style the Job Match form and ranked results with Bootstrap.
 - Used ChatGPT to help display matching skills alongside missing skills without changing the matching algorithm.
+- Used ChatGPT to help turn the table structures from MySQL Workbench into a schema.sql file.
+- Used ChatGPT to identify the Python packages needed in requirements.txt.
+- Used ChatGPT to improve the README with installation, database setup, and application instructions.
+- Used ChatGPT to verify that the README's .env instructions matched database.py.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.
@@ -77,9 +86,18 @@
 - Removed the progress bar for Total Applications because it would always show 100%.
 - Simplified the Dashboard by removing unnecessary headings and descriptions.
 - Changed the matching skill badges to green checkmarks and text without pill backgrounds.
+- Copied the actual table definitions from MySQL Workbench to make sure schema.sql matched my database.
+- Updated the README to describe the completed project instead of listing features as coming soon.
+- Added Windows instructions because I also want to test the project and record my demonstration on a Windows computer.
+- Checked my existing .gitignore and kept it unchanged because it already excluded sensitive and unnecessary files.
 
 ## Lessons Learned
 - Using a `.env` file keeps database credentials separate from the code and `.gitignore` prevents the file from being tracked by Git.
 - AI-generated code should always be reviewed, understood, and tested.
 - Best practice is to test each component individually for debugging purposes.
 - Foreign key constraints prevent deleting company records that are still referenced by jobs or contacts.
+- Using Bootstrap and shared CSS makes it easier to keep the website consistent across different pages.
+- Testing forms with different inputs is important for catching validation errors and making sure database records are saved correctly.
+- JSON columns are useful for storing information like job requirements, but the data needs to be validated before saving it to MySQL.
+- A schema.sql file allows someone else to recreate the database structure, but it does not automatically include the existing records.
+- Keeping requirements.txt and README.md updated makes it easier to set up and run the project on another computer.
