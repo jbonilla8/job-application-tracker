@@ -79,46 +79,92 @@
 
 {% if edit_company %}
 
-<h3>Edit Company</h3>
+<!-- Edit Company popup -->
+<div class="modal fade" id="editCompanyModal" tabindex="-1" aria-labelledby="editCompanyModalLabel" aria-hidden="true">
 
-<form id="edit-company-form" method="POST" action="{{ url_for('companies') }}">
-    <!-- Identify the selected company and form action -->
-    <input type="hidden" name="form_action" value="edit">
-    <input type="hidden" name="company_id" value="{{ edit_company.company_id }}">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
 
-    <p>
-        <label for="edit_company_name">Company Name:</label>
-        <input type="text" id="edit_company_name" name="company_name" value="{{ edit_company.company_name }}" required>
-    </p>
+            <div class="modal-header">
+                <h3 class="modal-title fs-5" id="editCompanyModalLabel">
+                    Edit Company
+                </h3>
 
-    <p>
-        <label for="edit_industry">Industry:</label>
-        <input type="text" id="edit_industry" name="industry" value="{{ edit_company.industry or '' }}">
-    </p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-    <p>
-        <label for="edit_website">Website:</label>
-        <input type="text" id="edit_website" name="website" value="{{ edit_company.website or '' }}">
-    </p>
+            <form id="edit-company-form" method="POST" action="{{ url_for('companies') }}">
 
-    <p>
-        <label for="edit_city">City:</label>
-        <input type="text" id="edit_city" name="city" value="{{ edit_company.city or '' }}">
-    </p>
+                <!-- Identify the selected company and form action -->
+                <input type="hidden" name="form_action" value="edit">
+                <input type="hidden" name="company_id" value="{{ edit_company.company_id }}">
 
-    <p>
-        <label for="edit_state">State:</label>
-        <input type="text" id="edit_state" name="state" value="{{ edit_company.state or '' }}">
-    </p>
+                <div class="modal-body">
 
-    <p>
-        <label for="edit_notes">Notes:</label>
-        <textarea id="edit_notes" name="notes">{{ edit_company.notes or '' }}</textarea>
-    </p>
+                    <div class="mb-3">
+                        <label for="edit_company_name" class="form-label">
+                            Company Name
+                        </label>
+                        <input type="text" id="edit_company_name" name="company_name"
+                            value="{{ edit_company.company_name }}" class="form-control" required>
+                    </div>
 
-    <button type="submit" id="save-changes-button" disabled>Save Changes</button>
-    <a href="{{ url_for('companies') }}">Cancel</a>
-</form>
+                    <div class="mb-3">
+                        <label for="edit_industry" class="form-label">
+                            Industry
+                        </label>
+                        <input type="text" id="edit_industry" name="industry" value="{{ edit_company.industry or '' }}"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_website" class="form-label">
+                            Website
+                        </label>
+                        <input type="text" id="edit_website" name="website" value="{{ edit_company.website or '' }}"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_city" class="form-label">
+                            City
+                        </label>
+                        <input type="text" id="edit_city" name="city" value="{{ edit_company.city or '' }}"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_state" class="form-label">
+                            State
+                        </label>
+                        <input type="text" id="edit_state" name="state" value="{{ edit_company.state or '' }}"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_notes" class="form-label">
+                            Notes
+                        </label>
+                        <textarea id="edit_notes" name="notes" class="form-control"
+                            rows="3">{{ edit_company.notes or '' }}</textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" id="save-changes-button" class="btn btn-primary" disabled>
+                        Save Changes
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endif %}
 
@@ -212,7 +258,20 @@
 
     if (navigation && navigation.type === "reload") {
         window.location.replace("{{ url_for('companies') }}");
+    } else {
+        // Automatically open the Edit Company popup
+        document.addEventListener("DOMContentLoaded", function () {
+            const editCompanyModal = document.getElementById("editCompanyModal");
+            const modal = new bootstrap.Modal(editCompanyModal);
+
+            modal.show();
+        });
     }
+
+    // Return to the Companies page when the Edit popup is closed
+    document.getElementById("editCompanyModal").addEventListener("hidden.bs.modal", function () {
+        window.location.href = "{{ url_for('companies') }}";
+    });
 
     // Get the Edit Company form and Save Changes button
     const editForm = document.getElementById("edit-company-form");

@@ -82,60 +82,114 @@
 
 {% if edit_contact %}
 
-<h3>Edit Contact</h3>
+<!-- Edit Contact popup -->
+<div class="modal fade" id="editContactModal" tabindex="-1" aria-labelledby="editContactModalLabel" aria-hidden="true">
 
-<form id="edit-contact-form" method="POST" action="{{ url_for('contacts') }}">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
 
-    <!-- Identify the contact being edited -->
-    <input type="hidden" name="form_action" value="edit">
-    <input type="hidden" name="contact_id" value="{{ edit_contact.contact_id }}">
+            <div class="modal-header">
+                <h3 class="modal-title fs-5" id="editContactModalLabel">
+                    Edit Contact
+                </h3>
 
-    <p>
-        <label for="edit_company_id">Company:</label>
-        <select id="edit_company_id" name="company_id" required>
-            {% for company in companies %}
-            <option value="{{ company.company_id }}" {% if company.company_id==edit_contact.company_id %}selected{%
-                endif %}>
-                {{ company.company_name }}
-            </option>
-            {% endfor %}
-        </select>
-    </p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-    <p>
-        <label for="edit_contact_name">Name:</label>
-        <input type="text" id="edit_contact_name" name="contact_name" value="{{ edit_contact.contact_name }}" required>
-    </p>
+            <form id="edit-contact-form" method="POST" action="{{ url_for('contacts') }}">
 
-    <p>
-        <label for="edit_title">Title:</label>
-        <input type="text" id="edit_title" name="title" value="{{ edit_contact.title or '' }}">
-    </p>
+                <!-- Identify the contact being edited -->
+                <input type="hidden" name="form_action" value="edit">
+                <input type="hidden" name="contact_id" value="{{ edit_contact.contact_id }}">
 
-    <p>
-        <label for="edit_email">Email:</label>
-        <input type="email" id="edit_email" name="email" value="{{ edit_contact.email or '' }}">
-    </p>
+                <div class="modal-body">
 
-    <p>
-        <label for="edit_phone">Phone:</label>
-        <input type="tel" id="edit_phone" name="phone" value="{{ edit_contact.phone or '' }}">
-    </p>
+                    <div class="mb-3">
+                        <label for="edit_company_id" class="form-label">
+                            Company
+                        </label>
 
-    <p>
-        <label for="edit_linkedin_url">LinkedIn URL:</label>
-        <input type="url" id="edit_linkedin_url" name="linkedin_url" value="{{ edit_contact.linkedin_url or '' }}">
-    </p>
+                        <select id="edit_company_id" name="company_id" class="form-select" required>
 
-    <p>
-        <label for="edit_notes">Notes:</label>
-        <textarea id="edit_notes" name="notes">{{ edit_contact.notes or '' }}</textarea>
-    </p>
+                            {% for company in companies %}
+                            <option value="{{ company.company_id }}" {% if company.company_id==edit_contact.company_id
+                                %}selected{% endif %}>
+                                {{ company.company_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-    <button type="submit" id="save-changes-button" disabled>Save Changes</button>
-    <a href="{{ url_for('contacts') }}">Cancel</a>
+                    <div class="mb-3">
+                        <label for="edit_contact_name" class="form-label">
+                            Name
+                        </label>
 
-</form>
+                        <input type="text" id="edit_contact_name" name="contact_name"
+                            value="{{ edit_contact.contact_name }}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_title" class="form-label">
+                            Title
+                        </label>
+
+                        <input type="text" id="edit_title" name="title" value="{{ edit_contact.title or '' }}"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_email" class="form-label">
+                            Email
+                        </label>
+
+                        <input type="email" id="edit_email" name="email" value="{{ edit_contact.email or '' }}"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_phone" class="form-label">
+                            Phone
+                        </label>
+
+                        <input type="tel" id="edit_phone" name="phone" value="{{ edit_contact.phone or '' }}"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_linkedin_url" class="form-label">
+                            LinkedIn URL
+                        </label>
+
+                        <input type="url" id="edit_linkedin_url" name="linkedin_url"
+                            value="{{ edit_contact.linkedin_url or '' }}" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_notes" class="form-label">
+                            Notes
+                        </label>
+
+                        <textarea id="edit_notes" name="notes" class="form-control"
+                            rows="3">{{ edit_contact.notes or '' }}</textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" id="save-changes-button" class="btn btn-primary" disabled>
+                        Save Changes
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endif %}
 
@@ -164,8 +218,11 @@
                         <label for="company_id" class="form-label">
                             Company
                         </label>
+
                         <select id="company_id" name="company_id" class="form-select" required>
+
                             <option value="">Select a company</option>
+
                             {% for company in companies %}
                             <option value="{{ company.company_id }}">
                                 {{ company.company_name }}
@@ -178,6 +235,7 @@
                         <label for="contact_name" class="form-label">
                             Name
                         </label>
+
                         <input type="text" id="contact_name" name="contact_name" class="form-control" required>
                     </div>
 
@@ -185,6 +243,7 @@
                         <label for="title" class="form-label">
                             Title
                         </label>
+
                         <input type="text" id="title" name="title" class="form-control">
                     </div>
 
@@ -192,6 +251,7 @@
                         <label for="email" class="form-label">
                             Email
                         </label>
+
                         <input type="email" id="email" name="email" class="form-control">
                     </div>
 
@@ -199,6 +259,7 @@
                         <label for="phone" class="form-label">
                             Phone
                         </label>
+
                         <input type="tel" id="phone" name="phone" class="form-control">
                     </div>
 
@@ -206,6 +267,7 @@
                         <label for="linkedin_url" class="form-label">
                             LinkedIn URL
                         </label>
+
                         <input type="url" id="linkedin_url" name="linkedin_url" class="form-control">
                     </div>
 
@@ -213,6 +275,7 @@
                         <label for="notes" class="form-label">
                             Notes
                         </label>
+
                         <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
                     </div>
 
@@ -243,7 +306,24 @@
 
     if (navigation && navigation.type === "reload") {
         window.location.replace("{{ url_for('contacts') }}");
+    } else {
+        // Automatically open the Edit Contact popup
+        document.addEventListener("DOMContentLoaded", function () {
+            const editContactModal =
+                document.getElementById("editContactModal");
+
+            const modal = new bootstrap.Modal(editContactModal);
+            modal.show();
+        });
     }
+
+    // Return to Contacts when the Edit popup is closed
+    document.getElementById("editContactModal").addEventListener(
+        "hidden.bs.modal",
+        function () {
+            window.location.href = "{{ url_for('contacts') }}";
+        }
+    );
 
     // Get the Edit Contact form and Save Changes button
     const editForm = document.getElementById("edit-contact-form");
@@ -277,7 +357,9 @@
 
 <script>
     // Store the contact form until deletion is confirmed
-    const deleteContactDialog = document.getElementById("delete-contact-dialog");
+    const deleteContactDialog =
+        document.getElementById("delete-contact-dialog");
+
     let contactFormToDelete = null;
 
     // Open the custom confirmation dialog

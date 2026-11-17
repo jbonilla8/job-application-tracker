@@ -17,6 +17,8 @@
 11. "How to add detail views for individual records in Flask so users can see their information without editing it"
 12. "How to use Bootstrap to make the navigation responsive with a hamburger menu on smaller screens"
 13. "How to make a responsive navigation bar with Bootstrap, a mobile hamburger menu, and a way to highlight the current page"
+14. "How to use Bootstrap modals"
+15. "How to fix a Bootstrap modal that doesn't scroll when the form has too many fields"
 
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
@@ -32,6 +34,10 @@
 - Used ChatGPT to help create Flask routes and HTML templates for displaying individual record details.
 - Used ChatGPT to help style the navigation bar with Bootstrap and add a mobile side menu.
 - Used ChatGPT to help create a responsive Bootstrap navigation bar with a mobile side menu and active page highlighting.
+- Used ChatGPT to help improve the page layout and apply consistent table and heading styles.
+- Used ChatGPT to help convert the Add forms into Bootstrap modals with styled inputs and buttons.
+- Used ChatGPT to help convert the Edit forms for Companies, Jobs, Applications, and Contacts into Bootstrap modals while keeping the existing functionality.
+- Used ChatGPT to help fix the modal scrolling issue so the form fields can scroll while the buttons stay visible.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.
@@ -52,6 +58,12 @@
 - Added hamburger menu for navigation links on smaller screen sizes.
 - Removed the duplicate website title and adjusted the navigation spacing so the hamburger menu sits closer to the left edge on mobile.
 - Chose a subtle background highlight instead of an underline for the active navigation link and adjusted the styling to prevent the links from shifting.
+- Adjusted the page margins to give the navigation and tables more space while keeping them aligned.
+- Moved Add button for forms to the top of pages.
+- Chose to use popups (Bootstrap modals) for the Add forms instead of displaying them below the tables.
+- Chose to apply table and heading styles globally through style.css instead of styling each page separately.
+- Chose to make the Edit forms match the Add forms instead of having them appear below the tables.
+- Noticed that the Edit Job modal wasn't scrolling properly and added a shared CSS fix in style.css so it works across the website.
 
 ## Lessons Learned
 - Using a `.env` file keeps database credentials separate from the code and `.gitignore` prevents the file from being tracked by Git.

@@ -27,3 +27,17 @@ main h2 {
     padding-left: 1rem;
     margin-bottom: 1.5rem;
 }
+
+/* Allow forms inside Bootstrap modals to scroll */
+.modal-dialog-scrollable .modal-content>form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.modal-dialog-scrollable .modal-content>form .modal-body {
+    min-height: 0;
+    overflow-y: auto;
+}

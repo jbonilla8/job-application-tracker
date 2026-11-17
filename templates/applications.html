@@ -82,63 +82,112 @@
 
 {% if edit_application %}
 
-<h3>Edit Application</h3>
+<!-- Edit Application popup -->
+<div class="modal fade" id="editApplicationModal" tabindex="-1" aria-labelledby="editApplicationModalLabel"
+    aria-hidden="true">
 
-<form id="edit-application-form" method="POST" action="{{ url_for('applications') }}">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
 
-    <!-- Identify the application being edited -->
-    <input type="hidden" name="form_action" value="edit">
-    <input type="hidden" name="application_id" value="{{ edit_application.application_id }}">
+            <div class="modal-header">
+                <h3 class="modal-title fs-5" id="editApplicationModalLabel">
+                    Edit Application
+                </h3>
 
-    <p>
-        <label for="edit_job_id">Job:</label>
-        <select id="edit_job_id" name="job_id" required>
-            {% for job in jobs %}
-            <option value="{{ job.job_id }}" {% if job.job_id==edit_application.job_id %}selected{% endif %}>
-                {{ job.company_name }} - {{ job.job_title }}
-            </option>
-            {% endfor %}
-        </select>
-    </p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-    <p>
-        <label for="edit_application_date">Application Date:</label>
-        <input type="date" id="edit_application_date" name="application_date"
-            value="{{ edit_application.application_date or '' }}" required>
-    </p>
+            <form id="edit-application-form" method="POST" action="{{ url_for('applications') }}">
 
-    <p>
-        <label for="edit_status">Status:</label>
-        <select id="edit_status" name="status" required>
-            {% for status in ['Applied', 'Screening', 'Interview', 'Offer', 'Rejected', 'Withdrawn'] %}
-            <option value="{{ status }}" {% if edit_application.status==status %}selected{% endif %}>
-                {{ status }}
-            </option>
-            {% endfor %}
-        </select>
-    </p>
+                <!-- Identify the application being edited -->
+                <input type="hidden" name="form_action" value="edit">
+                <input type="hidden" name="application_id" value="{{ edit_application.application_id }}">
 
-    <p>
-        <label for="edit_resume_version">Resume Version:</label>
-        <input type="text" id="edit_resume_version" name="resume_version"
-            value="{{ edit_application.resume_version or '' }}">
-    </p>
+                <div class="modal-body">
 
-    <p>
-        <label for="edit_cover_letter_sent">Cover Letter Sent:</label>
-        <input type="checkbox" id="edit_cover_letter_sent" name="cover_letter_sent" {% if
-            edit_application.cover_letter_sent %}checked{% endif %}>
-    </p>
+                    <div class="mb-3">
+                        <label for="edit_job_id" class="form-label">
+                            Job
+                        </label>
 
-    <p>
-        <label for="edit_interview_data">Interview Data:</label>
-        <textarea id="edit_interview_data" name="interview_data">{{ edit_application.interview_data or '' }}</textarea>
-    </p>
+                        <select id="edit_job_id" name="job_id" class="form-select" required>
 
-    <button type="submit" id="save-changes-button" disabled>Save Changes</button>
-    <a href="{{ url_for('applications') }}">Cancel</a>
+                            {% for job in jobs %}
+                            <option value="{{ job.job_id }}" {% if job.job_id==edit_application.job_id %}selected{%
+                                endif %}>
+                                {{ job.company_name }} - {{ job.job_title }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-</form>
+                    <div class="mb-3">
+                        <label for="edit_application_date" class="form-label">
+                            Application Date
+                        </label>
+
+                        <input type="date" id="edit_application_date" name="application_date"
+                            value="{{ edit_application.application_date or '' }}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_status" class="form-label">
+                            Status
+                        </label>
+
+                        <select id="edit_status" name="status" class="form-select" required>
+
+                            {% for status in ['Applied', 'Screening', 'Interview', 'Offer', 'Rejected', 'Withdrawn'] %}
+                            <option value="{{ status }}" {% if edit_application.status==status %}selected{% endif %}>
+                                {{ status }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_resume_version" class="form-label">
+                            Resume Version
+                        </label>
+
+                        <input type="text" id="edit_resume_version" name="resume_version"
+                            value="{{ edit_application.resume_version or '' }}" class="form-control">
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" id="edit_cover_letter_sent" name="cover_letter_sent"
+                            class="form-check-input" {% if edit_application.cover_letter_sent %}checked{% endif %}>
+
+                        <label for="edit_cover_letter_sent" class="form-check-label">
+                            Cover Letter Sent
+                        </label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_interview_data" class="form-label">
+                            Interview Data
+                        </label>
+
+                        <textarea id="edit_interview_data" name="interview_data" class="form-control" rows="3"
+                            placeholder='{"round": 1, "notes": "Phone interview"}'>{{ edit_application.interview_data or '' }}</textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" id="save-changes-button" class="btn btn-primary" disabled>
+                        Save Changes
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endif %}
 
@@ -165,9 +214,14 @@
                 <div class="modal-body">
 
                     <div class="mb-3">
-                        <label for="job_id" class="form-label">Job</label>
+                        <label for="job_id" class="form-label">
+                            Job
+                        </label>
+
                         <select id="job_id" name="job_id" class="form-select" required>
+
                             <option value="">Select a job</option>
+
                             {% for job in jobs %}
                             <option value="{{ job.job_id }}">
                                 {{ job.company_name }} - {{ job.job_title }}
@@ -180,12 +234,17 @@
                         <label for="application_date" class="form-label">
                             Application Date
                         </label>
+
                         <input type="date" id="application_date" name="application_date" class="form-control" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="status" class="form-label">Status</label>
+                        <label for="status" class="form-label">
+                            Status
+                        </label>
+
                         <select id="status" name="status" class="form-select" required>
+
                             <option value="">Select a status</option>
                             <option value="Applied">Applied</option>
                             <option value="Screening">Screening</option>
@@ -200,11 +259,13 @@
                         <label for="resume_version" class="form-label">
                             Resume Version
                         </label>
+
                         <input type="text" id="resume_version" name="resume_version" class="form-control">
                     </div>
 
                     <div class="mb-3 form-check">
                         <input type="checkbox" id="cover_letter_sent" name="cover_letter_sent" class="form-check-input">
+
                         <label for="cover_letter_sent" class="form-check-label">
                             Cover Letter Sent
                         </label>
@@ -214,6 +275,7 @@
                         <label for="interview_data" class="form-label">
                             Interview Data
                         </label>
+
                         <textarea id="interview_data" name="interview_data" class="form-control" rows="3"
                             placeholder='{"round": 1, "notes": "Phone interview"}'></textarea>
                     </div>
@@ -245,7 +307,24 @@
 
     if (navigation && navigation.type === "reload") {
         window.location.replace("{{ url_for('applications') }}");
+    } else {
+        // Automatically open the Edit Application popup
+        document.addEventListener("DOMContentLoaded", function () {
+            const editApplicationModal =
+                document.getElementById("editApplicationModal");
+
+            const modal = new bootstrap.Modal(editApplicationModal);
+            modal.show();
+        });
     }
+
+    // Return to Applications when the Edit popup is closed
+    document.getElementById("editApplicationModal").addEventListener(
+        "hidden.bs.modal",
+        function () {
+            window.location.href = "{{ url_for('applications') }}";
+        }
+    );
 
     // Get the Edit Application form and Save Changes button
     const editForm = document.getElementById("edit-application-form");
@@ -279,7 +358,9 @@
 
 <script>
     // Store the application form until deletion is confirmed
-    const deleteApplicationDialog = document.getElementById("delete-application-dialog");
+    const deleteApplicationDialog =
+        document.getElementById("delete-application-dialog");
+
     let applicationFormToDelete = null;
 
     // Open the custom confirmation dialog

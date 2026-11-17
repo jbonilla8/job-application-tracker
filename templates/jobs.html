@@ -87,84 +87,149 @@
 
 {% if edit_job %}
 
-<h3>Edit Job</h3>
+<!-- Edit Job popup -->
+<div class="modal fade" id="editJobModal" tabindex="-1" aria-labelledby="editJobModalLabel" aria-hidden="true">
 
-<form id="edit-job-form" method="POST" action="{{ url_for('jobs') }}">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
 
-    <!-- Identify the selected job and form action -->
-    <input type="hidden" name="form_action" value="edit">
-    <input type="hidden" name="job_id" value="{{ edit_job.job_id }}">
+            <div class="modal-header">
+                <h3 class="modal-title fs-5" id="editJobModalLabel">
+                    Edit Job
+                </h3>
 
-    <p>
-        <label for="edit_company_id">Company:</label>
-        <select id="edit_company_id" name="company_id" required>
-            {% for company in companies %}
-            <option value="{{ company.company_id }}" {% if company.company_id==edit_job.company_id %}selected{% endif
-                %}>
-                {{ company.company_name }}
-            </option>
-            {% endfor %}
-        </select>
-    </p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-    <p>
-        <label for="edit_job_title">Title:</label>
-        <input type="text" id="edit_job_title" name="job_title" value="{{ edit_job.job_title }}" required>
-    </p>
+            <form id="edit-job-form" method="POST" action="{{ url_for('jobs') }}">
 
-    <p>
-        <label for="edit_job_type">Type:</label>
-        <select id="edit_job_type" name="job_type">
-            <option value="">Select a job type</option>
-            {% for job_type in ['Full-time', 'Part-time', 'Contract', 'Internship'] %}
-            <option value="{{ job_type }}" {% if edit_job.job_type==job_type %}selected{% endif %}>
-                {{ job_type }}
-            </option>
-            {% endfor %}
-        </select>
-    </p>
+                <!-- Identify the selected job and form action -->
+                <input type="hidden" name="form_action" value="edit">
+                <input type="hidden" name="job_id" value="{{ edit_job.job_id }}">
 
-    <p>
-        <label for="edit_salary_min">Min Salary:</label>
-        <input type="number" id="edit_salary_min" name="salary_min" min="0"
-            value="{{ edit_job.salary_min if edit_job.salary_min is not none else '' }}">
-    </p>
+                <div class="modal-body">
 
-    <p>
-        <label for="edit_salary_max">Max Salary:</label>
-        <input type="number" id="edit_salary_max" name="salary_max" min="0"
-            value="{{ edit_job.salary_max if edit_job.salary_max is not none else '' }}">
-    </p>
+                    <div class="mb-3">
+                        <label for="edit_company_id" class="form-label">
+                            Company
+                        </label>
 
-    <p>
-        <label for="edit_job_url">URL:</label>
-        <input type="text" id="edit_job_url" name="job_url" value="{{ edit_job.job_url or '' }}">
-    </p>
+                        <select id="edit_company_id" name="company_id" class="form-select" required>
 
-    <p>
-        <label for="edit_date_posted">Date Posted:</label>
-        <input type="date" id="edit_date_posted" name="date_posted" value="{{ edit_job.date_posted or '' }}">
-    </p>
+                            {% for company in companies %}
+                            <option value="{{ company.company_id }}" {% if company.company_id==edit_job.company_id
+                                %}selected{% endif %}>
+                                {{ company.company_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-    <p>
-        <label for="edit_requirements">Requirements:</label>
-        <textarea id="edit_requirements" name="requirements">{{ edit_job.requirements or '' }}</textarea>
-    </p>
+                    <div class="mb-3">
+                        <label for="edit_job_title" class="form-label">
+                            Title
+                        </label>
 
-    <p>
-        <label for="edit_job_description">Description:</label>
-        <textarea id="edit_job_description" name="job_description">{{ edit_job.job_description or '' }}</textarea>
-    </p>
+                        <input type="text" id="edit_job_title" name="job_title" value="{{ edit_job.job_title }}"
+                            class="form-control" required>
+                    </div>
 
-    <p>
-        <label for="edit_is_active">Active:</label>
-        <input type="checkbox" id="edit_is_active" name="is_active" {% if edit_job.is_active %}checked{% endif %}>
-    </p>
+                    <div class="mb-3">
+                        <label for="edit_job_type" class="form-label">
+                            Type
+                        </label>
 
-    <button type="submit" id="save-changes-button" disabled>Save Changes</button>
-    <a href="{{ url_for('jobs') }}">Cancel</a>
+                        <select id="edit_job_type" name="job_type" class="form-select">
 
-</form>
+                            <option value="">Select a job type</option>
+
+                            {% for job_type in ['Full-time', 'Part-time', 'Contract', 'Internship'] %}
+                            <option value="{{ job_type }}" {% if edit_job.job_type==job_type %}selected{% endif %}>
+                                {{ job_type }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_salary_min" class="form-label">
+                            Min Salary
+                        </label>
+
+                        <input type="number" id="edit_salary_min" name="salary_min" min="0" class="form-control"
+                            value="{{ edit_job.salary_min if edit_job.salary_min is not none else '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_salary_max" class="form-label">
+                            Max Salary
+                        </label>
+
+                        <input type="number" id="edit_salary_max" name="salary_max" min="0" class="form-control"
+                            value="{{ edit_job.salary_max if edit_job.salary_max is not none else '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_job_url" class="form-label">
+                            URL
+                        </label>
+
+                        <input type="text" id="edit_job_url" name="job_url" value="{{ edit_job.job_url or '' }}"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_date_posted" class="form-label">
+                            Date Posted
+                        </label>
+
+                        <input type="date" id="edit_date_posted" name="date_posted"
+                            value="{{ edit_job.date_posted or '' }}" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_requirements" class="form-label">
+                            Requirements
+                        </label>
+
+                        <textarea id="edit_requirements" name="requirements" class="form-control" rows="3"
+                            placeholder='["Python", "SQL", "Flask"]'>{{ edit_job.requirements or '' }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_job_description" class="form-label">
+                            Description
+                        </label>
+
+                        <textarea id="edit_job_description" name="job_description" class="form-control"
+                            rows="3">{{ edit_job.job_description or '' }}</textarea>
+                    </div>
+
+                    <div class="form-check">
+                        <input type="checkbox" id="edit_is_active" name="is_active" class="form-check-input" {% if
+                            edit_job.is_active %}checked{% endif %}>
+
+                        <label for="edit_is_active" class="form-check-label">
+                            Active
+                        </label>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" id="save-changes-button" class="btn btn-primary" disabled>
+                        Save Changes
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endif %}
 
@@ -173,87 +238,130 @@
 
 <!-- Add Job popup -->
 <div class="modal fade" id="addJobModal" tabindex="-1" aria-labelledby="addJobModalLabel" aria-hidden="true">
+
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
+
             <div class="modal-header">
-                <h3 class="modal-title fs-5" id="addJobModalLabel">Add Job</h3>
+                <h3 class="modal-title fs-5" id="addJobModalLabel">
+                    Add Job
+                </h3>
+
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <form method="POST" action="{{ url_for('jobs') }}">
+
                 <div class="modal-body">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="company_id" class="form-label">Company</label>
-                            <select id="company_id" name="company_id" class="form-select" required>
-                                <option value="">Select a company</option>
-                                {% for company in companies %}
-                                <option value="{{ company.company_id }}">
-                                    {{ company.company_name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="job_title" class="form-label">Title</label>
-                            <input type="text" id="job_title" name="job_title" class="form-control" required>
-                        </div>
+                    <div class="mb-3">
+                        <label for="company_id" class="form-label">
+                            Company
+                        </label>
 
-                        <div class="mb-3">
-                            <label for="job_type" class="form-label">Type</label>
-                            <select id="job_type" name="job_type" class="form-select">
-                                <option value="">Select a job type</option>
-                                <option value="Full-time">Full-time</option>
-                                <option value="Part-time">Part-time</option>
-                                <option value="Contract">Contract</option>
-                                <option value="Internship">Internship</option>
-                            </select>
-                        </div>
+                        <select id="company_id" name="company_id" class="form-select" required>
 
-                        <div class="mb-3">
-                            <label for="salary_min" class="form-label">Min Salary</label>
-                            <input type="number" id="salary_min" name="salary_min" class="form-control" min="0">
-                        </div>
+                            <option value="">Select a company</option>
 
-                        <div class="mb-3">
-                            <label for="salary_max" class="form-label">Max Salary</label>
-                            <input type="number" id="salary_max" name="salary_max" class="form-control" min="0">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="job_url" class="form-label">URL</label>
-                            <input type="url" id="job_url" name="job_url" class="form-control">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="date_posted" class="form-label">Date Posted</label>
-                            <input type="date" id="date_posted" name="date_posted" class="form-control">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="requirements" class="form-label">Requirements</label>
-                            <textarea id="requirements" name="requirements" class="form-control" rows="3"
-                                placeholder='["Python", "SQL", "Flask"]'></textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="job_description" class="form-label">Description</label>
-                            <textarea id="job_description" name="job_description" class="form-control"
-                                rows="3"></textarea>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" id="is_active" name="is_active" class="form-check-input" checked>
-                            <label for="is_active" class="form-check-label">Active</label>
-                        </div>
+                            {% for company in companies %}
+                            <option value="{{ company.company_id }}">
+                                {{ company.company_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 
-                    <button type="submit" class="btn btn-primary">Add Job</button>
+                    <div class="mb-3">
+                        <label for="job_title" class="form-label">
+                            Title
+                        </label>
+
+                        <input type="text" id="job_title" name="job_title" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="job_type" class="form-label">
+                            Type
+                        </label>
+
+                        <select id="job_type" name="job_type" class="form-select">
+                            <option value="">Select a job type</option>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Internship">Internship</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="salary_min" class="form-label">
+                            Min Salary
+                        </label>
+
+                        <input type="number" id="salary_min" name="salary_min" class="form-control" min="0">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="salary_max" class="form-label">
+                            Max Salary
+                        </label>
+
+                        <input type="number" id="salary_max" name="salary_max" class="form-control" min="0">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="job_url" class="form-label">
+                            URL
+                        </label>
+
+                        <input type="url" id="job_url" name="job_url" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="date_posted" class="form-label">
+                            Date Posted
+                        </label>
+
+                        <input type="date" id="date_posted" name="date_posted" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="requirements" class="form-label">
+                            Requirements
+                        </label>
+
+                        <textarea id="requirements" name="requirements" class="form-control" rows="3"
+                            placeholder='["Python", "SQL", "Flask"]'></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="job_description" class="form-label">
+                            Description
+                        </label>
+
+                        <textarea id="job_description" name="job_description" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-check">
+                        <input type="checkbox" id="is_active" name="is_active" class="form-check-input" checked>
+
+                        <label for="is_active" class="form-check-label">
+                            Active
+                        </label>
+                    </div>
+
                 </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        Add Job
+                    </button>
+                </div>
+
             </form>
         </div>
     </div>
@@ -269,7 +377,20 @@
 
     if (navigation && navigation.type === "reload") {
         window.location.replace("{{ url_for('jobs') }}");
+    } else {
+        // Automatically open the Edit Job popup
+        document.addEventListener("DOMContentLoaded", function () {
+            const editJobModal = document.getElementById("editJobModal");
+            const modal = new bootstrap.Modal(editJobModal);
+
+            modal.show();
+        });
     }
+
+    // Return to the Jobs page when the Edit popup is closed
+    document.getElementById("editJobModal").addEventListener("hidden.bs.modal", function () {
+        window.location.href = "{{ url_for('jobs') }}";
+    });
 
     // Get the Edit Job form and Save Changes button
     const editForm = document.getElementById("edit-job-form");
