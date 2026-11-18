@@ -78,21 +78,48 @@
     </table>
 </div>
 
-<!-- Custom confirmation dialog for deleting an application -->
-<dialog id="delete-application-dialog">
-    <h3>Delete Application</h3>
+<!-- Delete Application confirmation modal -->
+<div class="modal fade" id="deleteApplicationModal" tabindex="-1"
+    aria-labelledby="deleteApplicationModalLabel" aria-hidden="true">
 
-    <p>
-        Are you sure you want to delete the application for
-        <strong id="application-to-delete"></strong>?
-    </p>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
 
-    <form method="dialog">
-        <button type="submit" value="cancel">Cancel</button>
-        <button type="submit" value="delete">Delete</button>
-    </form>
-</dialog>
+            <div class="modal-header">
+                <h3 class="modal-title fs-5" id="deleteApplicationModalLabel">
+                    Delete Application
+                </h3>
 
+                <button type="button" class="btn-close"
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <p class="mb-2">
+                    Are you sure you want to delete the application for
+                    <strong id="application-to-delete"></strong>?
+                </p>
+
+                <p class="text-body-secondary small mb-0">
+                    This action cannot be undone.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button type="button" class="btn btn-danger"
+                    id="confirm-delete-application">
+                    Delete Application
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 {% if edit_application %}
 
@@ -369,33 +396,42 @@
 </script>
 {% endif %}
 
-
 <script>
-    // Store the application form until deletion is confirmed
-    const deleteApplicationDialog =
-        document.getElementById("delete-application-dialog");
+    // Store the selected application form until deletion is confirmed
+    const deleteApplicationModal =
+        document.getElementById("deleteApplicationModal");
 
     let applicationFormToDelete = null;
 
-    // Open the custom confirmation dialog
+    // Open the Bootstrap Delete confirmation modal
     function openDeleteApplicationDialog(form) {
         applicationFormToDelete = form;
 
         document.getElementById("application-to-delete").textContent =
             form.dataset.title + " at " + form.dataset.company;
 
-        deleteApplicationDialog.returnValue = "";
-        deleteApplicationDialog.showModal();
+        const modal =
+            bootstrap.Modal.getOrCreateInstance(deleteApplicationModal);
 
+        modal.show();
+
+        // Prevent deletion until the user confirms
         return false;
     }
 
-    // Submit the original Delete form only when confirmed
-    deleteApplicationDialog.addEventListener("close", function () {
-        if (this.returnValue === "delete" && applicationFormToDelete) {
-            applicationFormToDelete.submit();
-        }
+    // Delete the application only after confirmation
+    document.getElementById("confirm-delete-application")
+        .addEventListener("click", function () {
+            if (applicationFormToDelete) {
+                const form = applicationFormToDelete;
+                applicationFormToDelete = null;
 
+                form.submit();
+            }
+        });
+
+    // Clear the selected application when the modal closes
+    deleteApplicationModal.addEventListener("hidden.bs.modal", function () {
         applicationFormToDelete = null;
     });
 </script>

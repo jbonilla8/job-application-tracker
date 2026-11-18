@@ -63,3 +63,130 @@ main .table-responsive table td {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+
+/* Balance the Jobs table column widths */
+main .jobs-table-container table {
+    width: 100%;
+    min-width: 1280px;
+    table-layout: fixed;
+}
+
+/* Company */
+.jobs-table-container th:nth-child(1) {
+    width: 11%;
+}
+
+/* Job Title */
+.jobs-table-container th:nth-child(2) {
+    width: 14%;
+}
+
+/* Type */
+.jobs-table-container th:nth-child(3) {
+    width: 8%;
+}
+
+/* Minimum Salary */
+.jobs-table-container th:nth-child(4) {
+    width: 8%;
+}
+
+/* Maximum Salary */
+.jobs-table-container th:nth-child(5) {
+    width: 8%;
+}
+
+/* URL */
+.jobs-table-container th:nth-child(6) {
+    width: 6%;
+}
+
+/* Date Posted */
+.jobs-table-container th:nth-child(7) {
+    width: 9%;
+}
+
+/* Requirements */
+.jobs-table-container th:nth-child(8) {
+    width: 8%;
+}
+
+/* Description */
+.jobs-table-container th:nth-child(9) {
+    width: 7%;
+}
+
+/* Active */
+.jobs-table-container th:nth-child(10) {
+    width: 5%;
+}
+
+/* Actions */
+.jobs-table-container th:nth-child(11) {
+    width: 16%;
+}
+
+/* Keep all action buttons visible */
+main .jobs-table-container td:nth-child(11) {
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+
+/* Sticky horizontal scrollbar for responsive tables */
+.table-scroll-dock {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1020;
+    background-color: var(--bs-body-bg);
+    border-top: 1px solid var(--bs-border-color);
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+    padding: 4px 0 2px;
+}
+
+/* Label showing users they can scroll */
+.table-scroll-label {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--bs-secondary-color);
+    margin-bottom: 2px;
+}
+
+/* Actual horizontal scrollbar */
+.table-scroll-track {
+    width: 100%;
+    height: 17px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+/* Invisible content that sets the scrollbar width */
+.table-scroll-spacer {
+    height: 1px;
+}
+
+/* Leave room for the scrollbar at the bottom of the page */
+body.has-horizontal-dock main {
+    padding-bottom: 3.5rem !important;
+}
+
+/* Hide the scrollbar while a modal or delete dialog is open */
+body.modal-open .table-scroll-dock,
+body:has(dialog[open]) .table-scroll-dock {
+    display: none !important;
+}
+
+/* Hide the original table scrollbar when the sticky scrollbar is active */
+body.has-horizontal-dock main .table-responsive {
+    scrollbar-width: none;
+}
+
+body.has-horizontal-dock main .table-responsive::-webkit-scrollbar {
+    display: none;
+}

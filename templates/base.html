@@ -73,8 +73,93 @@
         {% endblock %}
     </main>
 
+   
+    <!-- Sticky horizontal scrollbar for responsive tables -->
+    <div id="tableScrollDock" class="table-scroll-dock">
+        <div class="table-scroll-label">
+            Scroll horizontally to see more columns &rarr;
+        </div>
+
+        <div id="tableScrollTrack"
+             class="table-scroll-track"
+             role="region"
+             aria-label="Table horizontal scrolling"
+             tabindex="0">
+            <div id="tableScrollSpacer" class="table-scroll-spacer"></div>
+        </div>
+    </div>
+
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Keep the bottom scrollbar synchronized with the table -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tableContainer = document.querySelector("main .table-responsive");
+            const dock = document.getElementById("tableScrollDock");
+            const scrollbar = document.getElementById("tableScrollTrack");
+            const spacer = document.getElementById("tableScrollSpacer");
+
+            if (!tableContainer) {
+                return;
+            }
+
+            function updateScrollbar() {
+                const needsScrolling =
+                    tableContainer.scrollWidth > tableContainer.clientWidth + 2;
+
+                dock.style.display = needsScrolling ? "block" : "none";
+
+                document.body.classList.toggle(
+                    "has-horizontal-dock",
+                    needsScrolling
+                );
+
+                if (needsScrolling) {
+                    // Match the table's available horizontal scrolling distance.
+                    spacer.style.width = (
+                        tableContainer.scrollWidth +
+                        scrollbar.clientWidth -
+                        tableContainer.clientWidth
+                    ) + "px";
+
+                    scrollbar.scrollLeft = tableContainer.scrollLeft;
+                }
+            }
+
+            // Moving the table also moves the bottom scrollbar.
+            tableContainer.addEventListener("scroll", function () {
+                if (Math.abs(scrollbar.scrollLeft - tableContainer.scrollLeft) > 1) {
+                    scrollbar.scrollLeft = tableContainer.scrollLeft;
+                }
+            }, { passive: true });
+
+            // Moving the bottom scrollbar also moves the table.
+            scrollbar.addEventListener("scroll", function () {
+                if (Math.abs(tableContainer.scrollLeft - scrollbar.scrollLeft) > 1) {
+                    tableContainer.scrollLeft = scrollbar.scrollLeft;
+                }
+            }, { passive: true });
+
+            window.addEventListener("resize", updateScrollbar);
+            window.addEventListener("load", updateScrollbar);
+
+            // Update if the table size changes.
+            if (typeof ResizeObserver !== "undefined") {
+                const observer = new ResizeObserver(updateScrollbar);
+
+                observer.observe(tableContainer);
+
+                const table = tableContainer.querySelector("table");
+
+                if (table) {
+                    observer.observe(table);
+                }
+            }
+
+            updateScrollbar();
+        });
+    </script>
 </body>
 
 </html>

@@ -77,21 +77,48 @@
     </table>
 </div>
 
-<!-- Custom confirmation dialog for deleting a contact -->
-<dialog id="delete-contact-dialog">
-    <h3>Delete Contact</h3>
+<!-- Delete Contact confirmation modal -->
+<div class="modal fade" id="deleteContactModal" tabindex="-1"
+    aria-labelledby="deleteContactModalLabel" aria-hidden="true">
 
-    <p>
-        Are you sure you want to delete
-        <strong id="contact-to-delete"></strong>?
-    </p>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
 
-    <form method="dialog">
-        <button type="submit" value="cancel">Cancel</button>
-        <button type="submit" value="delete">Delete</button>
-    </form>
-</dialog>
+            <div class="modal-header">
+                <h3 class="modal-title fs-5" id="deleteContactModalLabel">
+                    Delete Contact
+                </h3>
 
+                <button type="button" class="btn-close"
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <p class="mb-2">
+                    Are you sure you want to delete
+                    <strong id="contact-to-delete"></strong>?
+                </p>
+
+                <p class="text-body-secondary small mb-0">
+                    This action cannot be undone.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button type="button" class="btn btn-danger"
+                    id="confirm-delete-contact">
+                    Delete Contact
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 {% if edit_contact %}
 
@@ -367,33 +394,42 @@
 </script>
 {% endif %}
 
-
 <script>
-    // Store the contact form until deletion is confirmed
-    const deleteContactDialog =
-        document.getElementById("delete-contact-dialog");
+    // Store the selected contact form until deletion is confirmed
+    const deleteContactModal =
+        document.getElementById("deleteContactModal");
 
     let contactFormToDelete = null;
 
-    // Open the custom confirmation dialog
+    // Open the Bootstrap Delete confirmation modal
     function openDeleteContactDialog(form) {
         contactFormToDelete = form;
 
         document.getElementById("contact-to-delete").textContent =
             form.dataset.name + " at " + form.dataset.company;
 
-        deleteContactDialog.returnValue = "";
-        deleteContactDialog.showModal();
+        const modal =
+            bootstrap.Modal.getOrCreateInstance(deleteContactModal);
 
+        modal.show();
+
+        // Prevent deletion until the user confirms
         return false;
     }
 
-    // Submit the original Delete form only when confirmed
-    deleteContactDialog.addEventListener("close", function () {
-        if (this.returnValue === "delete" && contactFormToDelete) {
-            contactFormToDelete.submit();
-        }
+    // Delete the contact only after confirmation
+    document.getElementById("confirm-delete-contact")
+        .addEventListener("click", function () {
+            if (contactFormToDelete) {
+                const form = contactFormToDelete;
+                contactFormToDelete = null;
 
+                form.submit();
+            }
+        });
+
+    // Clear the selected contact when the modal closes
+    deleteContactModal.addEventListener("hidden.bs.modal", function () {
         contactFormToDelete = null;
     });
 </script>

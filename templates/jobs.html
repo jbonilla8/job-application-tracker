@@ -14,7 +14,7 @@
 </div>
 
 <!-- Allow the Jobs table to scroll horizontally on smaller screens -->
-<div class="table-responsive">
+<div class="table-responsive jobs-table-container">
     <table>
         <thead>
             <tr>
@@ -79,20 +79,48 @@
     </table>
 </div>
 
-<!-- Custom confirmation dialog for deleting a job -->
-<dialog id="delete-job-dialog">
-    <h3>Delete Job</h3>
+<!-- Delete Job confirmation modal -->
+<div class="modal fade" id="deleteJobModal" tabindex="-1"
+    aria-labelledby="deleteJobModalLabel" aria-hidden="true">
 
-    <p>
-        Are you sure you want to delete
-        <strong id="job-to-delete"></strong>?
-    </p>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
 
-    <form method="dialog">
-        <button type="submit" value="cancel">Cancel</button>
-        <button type="submit" value="delete">Delete</button>
-    </form>
-</dialog>
+            <div class="modal-header">
+                <h3 class="modal-title fs-5" id="deleteJobModalLabel">
+                    Delete Job
+                </h3>
+
+                <button type="button" class="btn-close"
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <p class="mb-2">
+                    Are you sure you want to delete
+                    <strong id="job-to-delete"></strong>?
+                </p>
+
+                <p class="text-body-secondary small mb-0">
+                    This action cannot be undone.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button type="button" class="btn btn-danger"
+                    id="confirm-delete-job">
+                    Delete Job
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 {% if edit_job %}
 
@@ -427,31 +455,37 @@
 </script>
 {% endif %}
 
-
 <script>
-    // Store the job form until the user confirms deletion
-    const deleteJobDialog = document.getElementById("delete-job-dialog");
+    // Store the selected job form until deletion is confirmed
+    const deleteJobModal = document.getElementById("deleteJobModal");
     let jobFormToDelete = null;
 
-    // Open the custom confirmation dialog
+    // Open the Bootstrap Delete confirmation modal
     function openDeleteJobDialog(form) {
         jobFormToDelete = form;
 
         document.getElementById("job-to-delete").textContent =
             form.dataset.title + " at " + form.dataset.company;
 
-        deleteJobDialog.returnValue = "";
-        deleteJobDialog.showModal();
+        const modal = bootstrap.Modal.getOrCreateInstance(deleteJobModal);
+        modal.show();
 
+        // Prevent deletion until the user confirms
         return false;
     }
 
-    // Submit the original Delete form only when confirmed
-    deleteJobDialog.addEventListener("close", function () {
-        if (this.returnValue === "delete" && jobFormToDelete) {
-            jobFormToDelete.submit();
-        }
+    // Delete the job only after confirmation
+    document.getElementById("confirm-delete-job").addEventListener("click", function () {
+        if (jobFormToDelete) {
+            const form = jobFormToDelete;
+            jobFormToDelete = null;
 
+            form.submit();
+        }
+    });
+
+    // Clear the selected job when the modal closes
+    deleteJobModal.addEventListener("hidden.bs.modal", function () {
         jobFormToDelete = null;
     });
 </script>

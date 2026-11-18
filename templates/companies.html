@@ -75,21 +75,48 @@
     </table>
 </div>
 
-<!-- Custom confirmation dialog for deleting a company -->
-<dialog id="delete-company-dialog">
-    <h3>Delete Company</h3>
+<!-- Delete Company confirmation modal -->
+<div class="modal fade" id="deleteCompanyModal" tabindex="-1"
+    aria-labelledby="deleteCompanyModalLabel" aria-hidden="true">
 
-    <p>
-        Are you sure you want to delete
-        <strong id="company-to-delete"></strong>?
-    </p>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
 
-    <form method="dialog">
-        <button type="submit" value="cancel">Cancel</button>
-        <button type="submit" value="delete">Delete</button>
-    </form>
-</dialog>
+            <div class="modal-header">
+                <h3 class="modal-title fs-5" id="deleteCompanyModalLabel">
+                    Delete Company
+                </h3>
 
+                <button type="button" class="btn-close"
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <p class="mb-2">
+                    Are you sure you want to delete
+                    <strong id="company-to-delete"></strong>?
+                </p>
+
+                <p class="text-body-secondary small mb-0">
+                    This action cannot be undone.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button type="button" class="btn btn-danger"
+                    id="confirm-delete-company">
+                    Delete Company
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 {% if edit_company %}
 
@@ -307,31 +334,37 @@
 </script>
 {% endif %}
 
-
 <script>
-    // Store the company form until the user confirms deletion
-    const deleteCompanyDialog = document.getElementById("delete-company-dialog");
+    // Store the selected company form until deletion is confirmed
+    const deleteCompanyModal = document.getElementById("deleteCompanyModal");
     let companyFormToDelete = null;
 
-    // Open the custom confirmation dialog
+    // Open the Bootstrap Delete confirmation modal
     function openDeleteCompanyDialog(form) {
         companyFormToDelete = form;
 
         document.getElementById("company-to-delete").textContent =
             form.dataset.name;
 
-        deleteCompanyDialog.returnValue = "";
-        deleteCompanyDialog.showModal();
+        const modal = bootstrap.Modal.getOrCreateInstance(deleteCompanyModal);
+        modal.show();
 
+        // Prevent the form from submitting before confirmation
         return false;
     }
 
-    // Submit the original Delete form only when confirmed
-    deleteCompanyDialog.addEventListener("close", function () {
-        if (this.returnValue === "delete" && companyFormToDelete) {
-            companyFormToDelete.submit();
-        }
+    // Delete the company only after confirmation
+    document.getElementById("confirm-delete-company").addEventListener("click", function () {
+        if (companyFormToDelete) {
+            const form = companyFormToDelete;
+            companyFormToDelete = null;
 
+            form.submit();
+        }
+    });
+
+    // Clear the selected company when the modal closes
+    deleteCompanyModal.addEventListener("hidden.bs.modal", function () {
         companyFormToDelete = null;
     });
 </script>

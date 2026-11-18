@@ -29,6 +29,9 @@
 23. "How do I check that my .gitignore protects my database password?"
 24. "How do I export my existing MySQL records without recreating the database tables"
 25. "How do I clean up a MySQL data export and add optional sample data instructions to my README"
+26. "How to adjust the table column widths without removing any columns"
+27. "How to keep a horizontal scrollbar visible at the bottom of the browser window for responsive tables"
+28. "How to hide the duplicate horizontal scrollbar while keeping the sticky scrollbar working"
 
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
@@ -59,6 +62,10 @@
 - Used ChatGPT to help export the existing MySQL records into a separate SQL file for testing the project on Windows.
 - Used ChatGPT to help identify unnecessary MySQL replication settings in the exported SQL file.
 - Used ChatGPT to help update the README with optional sample data import instructions.
+- Used ChatGPT to help adjust the Jobs table column widths while keeping all existing information.
+- Used ChatGPT to help add a sticky horizontal scrollbar that makes wide tables easier to navigate.
+- Used ChatGPT to help replace the custom Delete dialogs with Bootstrap modals across all four tables.
+- Tested the new Delete modals on Windows to make sure both Cancel and Delete worked correctly.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.
@@ -98,6 +105,10 @@
 - Chose to keep the sample records in a separate SQL file instead of adding them to schema.sql.
 - Removed unnecessary export comments and replication settings while keeping the sample records and database relationships intact.
 - Added optional sample data instructions to the README so the project can be tested with either an empty or populated database.
+- Chose to keep all the Jobs table columns instead of removing the less frequently used fields.
+- Wanted the horizontal scrollbar to stay visible at the bottom of the browser window so users could tell the tables were scrollable.
+- Removed the duplicate scrollbar underneath the table to keep the interface cleaner.
+- Chose to make the Delete confirmation modals match the Add and Edit modals for a more consistent design.
 
 ## Lessons Learned
 - Using a `.env` file keeps database credentials separate from the code and `.gitignore` prevents the file from being tracked by Git.
@@ -111,3 +122,4 @@
 - Keeping requirements.txt and README.md updated makes it easier to set up and run the project on another computer.
 - Testing the project on another computer helped me check whether the README instructions were clear and complete.
 - Separating the database schema from sample data makes it easier to recreate and test the application on a new computer.
+- Testing the website on a different computer helped me find layout issues that weren't as noticeable on my Mac.
