@@ -65,7 +65,17 @@ pip install -r requirements.txt
 
 Make sure MySQL is installed and running.
 
-Run the `schema.sql` file in MySQL Workbench to create the `job_tracker` database and its four tables:
+If MySQL is not running on Windows, open PowerShell as Administrator and start the service:
+
+```powershell
+Start-Service MySQL80
+```
+
+The service name may be different depending on the MySQL installation.
+
+Open MySQL Workbench and connect to your local MySQL server.
+
+Select **File → Open SQL Script**, open `schema.sql`, and execute the script to create the `job_tracker` database and its four tables:
 
 - `companies`
 - `jobs`
@@ -73,6 +83,21 @@ Run the `schema.sql` file in MySQL Workbench to create the `job_tracker` databas
 - `contacts`
 
 The schema creates empty tables. Records can be added through the application.
+
+#### Optional: Import Sample Data
+
+The project also includes `job_tracker_sample_data.sql` with example companies, jobs, applications, and contacts.
+
+To import the sample data:
+
+1. Make sure `schema.sql` has already been executed.
+2. In MySQL Workbench, select **File → Open SQL Script**.
+3. Open `job_tracker_sample_data.sql`.
+4. Execute the script to insert the sample records.
+
+The sample data is optional, but it makes it easier to test the Dashboard, Job Match, and CRUD features.
+
+Import the sample data only once into an empty database to avoid duplicate primary key errors.
 
 
 ### 5. Configure Database Credentials

@@ -27,6 +27,8 @@
 21. "How do I update my README with installation and setup instructions?"
 22. "How do I make the setup instructions work for both macOS and Windows?"
 23. "How do I check that my .gitignore protects my database password?"
+24. "How do I export my existing MySQL records without recreating the database tables"
+25. "How do I clean up a MySQL data export and add optional sample data instructions to my README"
 
 ## What Worked Well
 - Adapted Python database connection code from Assignment 5 for use with Flask.
@@ -54,6 +56,9 @@
 - Used ChatGPT to identify the Python packages needed in requirements.txt.
 - Used ChatGPT to improve the README with installation, database setup, and application instructions.
 - Used ChatGPT to verify that the README's .env instructions matched database.py.
+- Used ChatGPT to help export the existing MySQL records into a separate SQL file for testing the project on Windows.
+- Used ChatGPT to help identify unnecessary MySQL replication settings in the exported SQL file.
+- Used ChatGPT to help update the README with optional sample data import instructions.
 
 ## What I Modified
 - Reused existing Assignment 5 code instead of replacing it entirely.
@@ -90,6 +95,9 @@
 - Updated the README to describe the completed project instead of listing features as coming soon.
 - Added Windows instructions because I also want to test the project and record my demonstration on a Windows computer.
 - Checked my existing .gitignore and kept it unchanged because it already excluded sensitive and unnecessary files.
+- Chose to keep the sample records in a separate SQL file instead of adding them to schema.sql.
+- Removed unnecessary export comments and replication settings while keeping the sample records and database relationships intact.
+- Added optional sample data instructions to the README so the project can be tested with either an empty or populated database.
 
 ## Lessons Learned
 - Using a `.env` file keeps database credentials separate from the code and `.gitignore` prevents the file from being tracked by Git.
@@ -101,3 +109,5 @@
 - JSON columns are useful for storing information like job requirements, but the data needs to be validated before saving it to MySQL.
 - A schema.sql file allows someone else to recreate the database structure, but it does not automatically include the existing records.
 - Keeping requirements.txt and README.md updated makes it easier to set up and run the project on another computer.
+- Testing the project on another computer helped me check whether the README instructions were clear and complete.
+- Separating the database schema from sample data makes it easier to recreate and test the application on a new computer.
