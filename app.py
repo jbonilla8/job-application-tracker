@@ -30,9 +30,29 @@ def dashboard():
         """)
         status_counts = {row["status"]: row["total"] for row in cursor.fetchall()}
 
-        # Send application statistics data to the dashboard template
+        # Get the five most recent job applications
+        cursor.execute("""
+            SELECT
+                a.application_id,
+                a.application_date,
+                a.status,
+                j.job_title,
+                c.company_name
+            FROM applications AS a
+            JOIN jobs AS j ON a.job_id = j.job_id
+            JOIN companies AS c ON j.company_id = c.company_id
+            ORDER BY a.application_date DESC, a.application_id DESC
+            LIMIT 5
+        """)
+        recent_applications = cursor.fetchall()
+
+        
+        # Send dashboard statistics and recent applications to the template
         return render_template(
-            "dashboard.html", stats=stats, status_counts=status_counts
+            "dashboard.html",
+            stats=stats,
+            status_counts=status_counts,
+            recent_applications=recent_applications,
         )
 
     except mysql.connector.Error:
