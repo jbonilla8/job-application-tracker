@@ -13,6 +13,28 @@
     {% endif %}
 </div>
 
+<!-- Show a warning if a company has related records -->
+{% if request.args.get("delete_error") == "related" %}
+{% set blocked_id = request.args.get("company_id") | int %}
+{% set blocked_company = companies | selectattr("company_id", "equalto", blocked_id) | first | default(none) %}
+
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Unable to delete {{ blocked_company.company_name if blocked_company else "company" }}.</strong>
+    This company has associated jobs or contacts.
+    Please remove or reassign those records before deleting the company.
+
+    <button type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"></button>
+</div>
+
+<!-- Remove the warning from the URL so it does not reappear on refresh -->
+<script>
+    window.history.replaceState(null, "", window.location.pathname);
+</script>
+{% endif %}
+
 <!-- Allow the Companies table to scroll horizontally on smaller screens -->
 <div class="table-responsive">
     <table>
@@ -76,8 +98,8 @@
 </div>
 
 <!-- Delete Company confirmation modal -->
-<div class="modal fade" id="deleteCompanyModal" tabindex="-1"
-    aria-labelledby="deleteCompanyModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteCompanyModal" tabindex="-1" aria-labelledby="deleteCompanyModalLabel"
+    aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -87,8 +109,7 @@
                     Delete Company
                 </h3>
 
-                <button type="button" class="btn-close"
-                    data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
@@ -103,13 +124,11 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary"
-                    data-bs-dismiss="modal">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                     Cancel
                 </button>
 
-                <button type="button" class="btn btn-danger"
-                    id="confirm-delete-company">
+                <button type="button" class="btn btn-danger" id="confirm-delete-company">
                     Delete Company
                 </button>
             </div>

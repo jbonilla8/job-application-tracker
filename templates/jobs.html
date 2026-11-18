@@ -13,6 +13,28 @@
     {% endif %}
 </div>
 
+<!-- Show a warning if a job has related applications -->
+{% if request.args.get("delete_error") == "related" %}
+{% set blocked_id = request.args.get("job_id") | int %}
+{% set blocked_job = jobs | selectattr("job_id", "equalto", blocked_id) | first | default(none) %}
+
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Unable to delete {{ blocked_job.job_title if blocked_job else "job" }}.</strong>
+    This job has associated applications.
+    Please remove or reassign those applications before deleting the job.
+
+    <button type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"></button>
+</div>
+
+<!-- Remove the warning from the URL so it does not reappear on refresh -->
+<script>
+    window.history.replaceState(null, "", window.location.pathname);
+</script>
+{% endif %}
+
 <!-- Allow the Jobs table to scroll horizontally on smaller screens -->
 <div class="table-responsive jobs-table-container">
     <table>

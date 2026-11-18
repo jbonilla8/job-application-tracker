@@ -95,9 +95,14 @@ def companies():
                 )
                 conn.commit()
 
-            except mysql.connector.IntegrityError:
-                # Prevent deleting companies with related jobs or contacts
-                return "Cannot delete a company with related jobs or contacts.", 409
+            except mysql.connector.IntegrityError as error:
+                conn.rollback()
+
+                # Prevent deletion when jobs or contacts reference this company
+                if error.errno == 1451:
+                    return redirect(url_for("companies", delete_error="related", company_id=company_id))
+
+                raise
 
             # Return to the Companies page
             return redirect(url_for("companies"))
@@ -273,9 +278,8 @@ def jobs():
 
                 # Prevent deletion when applications reference this job
                 if error.errno == 1451:
-                    return (
-                        "Cannot delete this job because it has associated applications.",
-                        409,
+                    return redirect(
+                        url_for("jobs", delete_error="related", job_id=job_id)
                     )
 
                 raise
