@@ -2,6 +2,13 @@
 
 A web application to help track job applications during the job search process. Users can organize companies, job listings, applications, and professional contacts in one place.
 
+## Video Demonstration
+
+[Watch or download the project demonstration](https://github.com/jbonilla8/job-application-tracker/releases/tag/v1.0-demo)
+
+This video demonstrates the Job Application Tracker's CRUD functionality,
+Dashboard, Job Match feature, MySQL database, and Python Flask server.
+
 ## Features
 
 - **Dashboard:** View the total number of applications and statistics for each application status.
